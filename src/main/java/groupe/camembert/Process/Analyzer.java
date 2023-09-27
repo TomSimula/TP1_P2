@@ -68,8 +68,14 @@ public class Analyzer {
         return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet";
     }
     //4. Nombre total de packages de l’application.
-    public String getNbPackages() {
-        return "";
+    public String getNbPackages() throws IOException{
+        PackageDeclarationVisitor visitor = new PackageDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(visitor);
+        }
+
+        return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet";
     }
     //5. Nombre moyen de méthodes par classe.
     public String getMethodsAvgPerClass() throws IOException {
@@ -116,4 +122,5 @@ public class Analyzer {
     public String getMAxParams() {
         return "";
     }
+
 }

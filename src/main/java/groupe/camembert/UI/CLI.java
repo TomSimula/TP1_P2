@@ -10,10 +10,10 @@ public class CLI {
     private final String menu =
             "Choisissez l'analyse à réaliser: \n" +
             "1. Nombre de classes.\n" +
-            //"2. Nombre de lignes de code.\n" +
-            //"3. Nombre total de méthodes.\n" +
-            //"4. Nombre total de packages.\n" +
-            //"5. Nombre moyen de méthodes par classe.\n" +
+            "2. Nombre de lignes de code.\n" +
+            "3. Nombre total de méthodes.\n" +
+            "4. Nombre total de packages.\n" +
+            "5. Nombre moyen de méthodes par classe.\n" +
             //"6. Nombre moyen d'attributs par classe.\n" +
             //"7. Les 10% des classes qui possèdent le plus grand nombre de méthodes.\n" +
             //"8. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
@@ -36,6 +36,18 @@ private final Scanner scanner = new Scanner(System.in);
             switch(option) {
                 case 1:
                     res = analyzer.getNbClasses();
+                    break;
+                case 2:
+                    res = analyzer.getNbCodeLines();
+                    break;
+                case 3:
+                    res = analyzer.getNbMethods();
+                    break;
+                case 4:
+                    res = analyzer.getNbPackages();
+                    break;
+                case 5:
+                    res = analyzer.getMethodsAvgPerClass();
                     break;
                 default:
                     break;
