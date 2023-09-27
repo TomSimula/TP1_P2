@@ -6,8 +6,9 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TypeDeclarationVisitor extends ASTVisitor {
+public class ClassDeclarationVisitor extends ASTVisitor {
 	List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
+
 	
 	public boolean visit(TypeDeclaration node) {
 		if(!node.isInterface()) types.add(node);
@@ -18,3 +19,5 @@ public class TypeDeclarationVisitor extends ASTVisitor {
 		return types;
 	}
 }
+
+

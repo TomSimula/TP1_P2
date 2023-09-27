@@ -1,7 +1,11 @@
 package groupe.camembert.Process;
 
-import groupe.camembert.visitor.TypeDeclarationVisitor;
+import groupe.camembert.visitor.LineCounterVisitor;
+import groupe.camembert.visitor.MethodDeclarationVisitor;
+import groupe.camembert.visitor.PackageDeclarationVisitor;
+import groupe.camembert.visitor.ClassDeclarationVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +28,6 @@ public class Analyzer {
             if (fileEntry.isDirectory()) {
                 javaFiles.addAll(listJavaFilesForFolder(fileEntry));
             } else if (fileEntry.getName().contains(".java")) {
-                // System.out.println(fileEntry.getName());
                 javaFiles.add(fileEntry);
             }
         }
@@ -36,31 +39,50 @@ public class Analyzer {
 
     //1. Nombre de classes de l’application.
     public String getNbClasses() throws IOException {
-        TypeDeclarationVisitor visitor = new TypeDeclarationVisitor();
-        int count = 0;
+        ClassDeclarationVisitor visitor = new ClassDeclarationVisitor();
         for (File fileEntry : javaFiles) {
             CompilationUnit parse = parser.parse(fileEntry);
             parse.accept(visitor);
-            count += visitor.getTypes().size();
         }
 
-        return " " + count;
+        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet";
     }
     //2. Nombre de lignes de code de l’application.
-    public String getNbCodeLines() {
-        return "";
+    public String getNbCodeLines() throws IOException {
+        LineCounterVisitor visitor = new LineCounterVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(visitor);
+        }
+        return "Il y a " +
+                //visitor.get()  +
+               " lignes dans ce projet";
     }
     //3. Nombre total de méthodes de l’application.
-    public String getNbMethods() {
-        return "";
+    public String getNbMethods() throws IOException {
+        MethodDeclarationVisitor visitor = new MethodDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(visitor);
+        }
+        return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet";
     }
     //4. Nombre total de packages de l’application.
     public String getNbPackages() {
         return "";
     }
     //5. Nombre moyen de méthodes par classe.
-    public String getClassAVGMethods(CompilationUnit parse) {
-        return "";
+    public String getMethodsAvgPerClass() throws IOException {
+        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
+        MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(classVisitor);
+            parse.accept(methodVisitor);
+        }
+        int avg = Math.round((float)methodVisitor.getMethods().size()/classVisitor.getTypes().size());
+
+        return "Il y a en moyenne " + avg + " par classes dans ce porjet (arrondie au superieur)";
     }
     //6. Nombre moyen de lignes de code par méthode.
     public String getMethodAVGNbLines() {
