@@ -17,7 +17,7 @@ public class PackageDeclarationVisitor extends ASTVisitor {
     }
 
     public List<Name> getPackageNames(){
-        return packages.stream().map(p -> p.getName()).distinct().collect(Collectors.toList());
+        return packages.stream().map(PackageDeclaration::getName).distinct().collect(Collectors.toList());
     }
 
 }

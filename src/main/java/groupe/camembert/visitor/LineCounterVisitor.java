@@ -17,7 +17,9 @@ public class LineCounterVisitor extends ASTVisitor {
         return super.visit(node);
     }
 
-    public List<ASTNode> getLine() {
+    public List<ASTNode> getLines() {
         return nodes;
     }
+
+    
 }
