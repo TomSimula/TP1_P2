@@ -20,5 +20,6 @@ public class PackageDeclarationVisitor extends ASTVisitor {
         return packages.stream().map(p -> p.getName()).distinct().collect(Collectors.toList());
     }
 
-    public int get
+
+    
 }

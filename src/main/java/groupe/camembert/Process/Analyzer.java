@@ -7,6 +7,7 @@ import groupe.camembert.visitor.ClassDeclarationVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
+import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
