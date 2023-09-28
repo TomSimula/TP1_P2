@@ -21,7 +21,7 @@ public class CLI {
             "10. Les classes qui font partie en même temps des deux catégories précédentes.\n" +
             "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
             //"12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
-            //"13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n"
+            "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
             ""
     ;
 
@@ -63,6 +63,10 @@ private final Scanner scanner = new Scanner(System.in);
                     System.out.println("Entrez le nombre de méthodes minimum");
                     int nb = scanner.nextInt();
                     res = analyzer.getClassesWithMoreThanXMethods(nb);
+                    break;
+
+                case 13:
+                    res = analyzer.getMaxParams();
                     break;
                 default:
                     break;

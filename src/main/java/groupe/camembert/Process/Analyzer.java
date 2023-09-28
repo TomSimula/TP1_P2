@@ -155,12 +155,14 @@ public class Analyzer {
     }
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
     public String getClassesWithMostMethods() throws IOException {
-        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(classVisitor);
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
         }
-        List<TypeDeclaration> types = classVisitor.getTypes();
+        List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getMethods().length));
         Collections.reverse(types);
         int tenPercent = Math.round((float)types.size()/10);
@@ -232,8 +234,23 @@ public class Analyzer {
 
 
     //13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.
-    public String getMAxParams() {
-        return "";
+    public String getMaxParams() throws IOException {
+        MethodDeclarationVisitor visitor = (MethodDeclarationVisitor) getVisitor("method");
+        if(!visitor.hasVisited()){
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
+        }
+        List<MethodDeclaration> methods = visitor.getMethods();
+        int max = 0;
+        for(MethodDeclaration method : methods){
+            int nbParams = method.parameters().size();
+            if(nbParams > max){
+                max = nbParams;
+            }
+        }
+        return "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + max;
     }
 
 }
