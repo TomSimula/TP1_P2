@@ -33,14 +33,13 @@ public class Analyzer {
 
     //2. Nombre de lignes de code de l’application.
     public String getNbCodeLines() throws IOException {
-        LineCounterVisitor visitor = new LineCounterVisitor();
+        //LineCounterVisitor visitor = new LineCounterVisitor();
+        int LineCpt = 0;
         for (File fileEntry : javaFiles) {
             CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(visitor);
+            LineCpt += parse.getLineNumber(parse.getExtendedLength(parse)-1);
         }
-        return "Il y a " +
-                //visitor.get()  +
-               " lignes dans ce projet";
+        return "Il y a " + LineCpt + " lignes dans ce projet";
     }
 
     //3. Nombre total de méthodes de l’application.
@@ -72,8 +71,22 @@ public class Analyzer {
 
 
     //6. Nombre moyen de lignes de code par méthode.
-    public String getMethodAVGNbLines() {
-        return "";
+    public String getMethodAVGNbLines() throws IOException {
+        MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+
+        int avg = 0;
+
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(methodVisitor);
+        }
+
+        for (MethodDeclaration m : methodVisitor.getMethods())
+        {
+            //TODO
+        }
+
+        return "Il y a en moyenne " + avg + " lignes de code par methodes dans ce projet (arrondi au superieur)";
     }
 
 
