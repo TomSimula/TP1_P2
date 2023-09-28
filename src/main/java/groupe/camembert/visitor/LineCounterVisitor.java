@@ -21,5 +21,5 @@ public class LineCounterVisitor extends ASTVisitor {
         return nodes;
     }
 
-    
+
 }
