@@ -3,12 +3,12 @@ package groupe.camembert.Process;
 import groupe.camembert.visitor.*;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class Analyzer {
@@ -116,22 +116,48 @@ public class Analyzer {
     public String getClassesWithMostMethods() {
         return "";
     }
+
+
     //9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.
-    public String getClassesWithMostAttributes(CompilationUnit parse) {
-        return "";
+    public String getClassesWithMostAttributes() throws IOException{
+        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(classVisitor);
+        }
+
+        List<TypeDeclaration> types = classVisitor.getTypes();
+        types.sort(Comparator.comparingInt(o -> o.getFields().length));
+        Collections.reverse(types);
+        int tenPercent = Math.round((float)types.size()/10);
+        List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
+        StringBuilder sb = new StringBuilder();
+        for(TypeDeclaration type : tenPercentTypes){
+            sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getFields().length).append("\n");
+        }
+        return sb.toString();
     }
+
+
+
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
     public String getClassesWithMostAttributesAndMethods(CompilationUnit parse) {
         return "";
     }
+
+
     //11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).
     public String getClassesWithMoreThanXMethods(int X) {
         return "";
     }
+
+
     //12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).
     public String getClassesWithMostLines() {
         return "";
     }
+
+
     //13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.
     public String getMAxParams() {
         return "";

@@ -1,6 +1,7 @@
 package groupe.camembert.visitor;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class ClassDeclarationVisitor extends ASTVisitor {
 	public List<TypeDeclaration> getTypes() {
 		return types;
 	}
+
+
 }
 
 
