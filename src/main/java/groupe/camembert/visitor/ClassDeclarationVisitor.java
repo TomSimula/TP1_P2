@@ -9,10 +9,15 @@ import java.util.List;
 
 public class ClassDeclarationVisitor extends ASTVisitor {
 	List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
+	private boolean hasVisited = false;
 
 	
 	public boolean visit(TypeDeclaration node) {
-		if(!node.isInterface()) types.add(node);
+		if(!node.isInterface()) {
+			types.add(node);
+			hasVisited = true;
+		}
+
 		return super.visit(node);
 	}
 	
@@ -21,6 +26,9 @@ public class ClassDeclarationVisitor extends ASTVisitor {
 	}
 
 
+	public boolean hasVisited() {
+		return hasVisited;
+	}
 }
 
 

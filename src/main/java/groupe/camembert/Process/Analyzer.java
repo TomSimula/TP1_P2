@@ -1,6 +1,7 @@
 package groupe.camembert.Process;
 
 import groupe.camembert.visitor.*;
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
@@ -14,6 +15,8 @@ import java.util.*;
 public class Analyzer {
     private static final Parser parser = new Parser();
     private ArrayList<File> javaFiles;
+
+    private HashMap<String, ASTVisitor> visitors = new HashMap<>();
 
 
     public Analyzer() {
@@ -38,14 +41,42 @@ public class Analyzer {
 
     //1. Nombre de classes de l’application.
     public String getNbClasses() throws IOException {
-        ClassDeclarationVisitor visitor = new ClassDeclarationVisitor();
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(visitor);
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
         }
+
 
         return "Il y a " + visitor.getTypes().size() + " classes dans ce projet";
     }
+
+    private ASTVisitor getVisitor(String type) {
+        ASTVisitor visitor = visitors.get(type);
+        if(visitor == null){
+            switch (type){
+                case "class":
+                    visitor = new ClassDeclarationVisitor();
+                    break;
+                case "attribute":
+                    visitor = new AttributeDeclarationVisitor();
+                    break;
+                case "method":
+                    visitor = new MethodDeclarationVisitor();
+                    break;
+                case "package":
+                    visitor = new PackageDeclarationVisitor();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
+            }
+            visitors.put(type, visitor);
+        }
+        return visitor;
+    }
+
     //2. Nombre de lignes de code de l’application.
     public String getNbCodeLines() throws IOException {
         LineCounterVisitor visitor = new LineCounterVisitor();
@@ -100,15 +131,18 @@ public class Analyzer {
 
     //7. Nombre moyen d’attributs par classe.
     public String getClassAVGAttributes() throws IOException{
-        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
-        AttributeDeclarationVisitor attributeVisitor = new AttributeDeclarationVisitor();
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(classVisitor);
-            parse.accept(attributeVisitor);
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
         }
-
-        int avg = Math.round((float)attributeVisitor.getAttributes().size()/classVisitor.getTypes().size());
+        int nbAttributes = visitor.getTypes().stream()
+                .map(typeDeclaration -> typeDeclaration.getFields().length)
+                .reduce(0, Integer::sum);
+        int nbClasses = visitor.getTypes().size();
+        int avg = Math.round((float)nbAttributes/nbClasses);
 
         return "Il y a en moyenne " + avg + " attribut par classes dans ce porjet (arrondie au superieur)";
     }
@@ -120,13 +154,14 @@ public class Analyzer {
 
     //9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.
     public String getClassesWithMostAttributes() throws IOException{
-        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(classVisitor);
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
         }
-
-        List<TypeDeclaration> types = classVisitor.getTypes();
+        List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getFields().length));
         Collections.reverse(types);
         int tenPercent = Math.round((float)types.size()/10);
