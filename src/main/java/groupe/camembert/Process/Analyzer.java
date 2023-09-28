@@ -33,8 +33,9 @@ public class Analyzer {
 
     //2. Nombre de lignes de code de l’application.
     public String getNbCodeLines() throws IOException {
-        //LineCounterVisitor visitor = new LineCounterVisitor();
+
         int LineCpt = 0;
+
         for (File fileEntry : javaFiles) {
             CompilationUnit parse = parser.parse(fileEntry);
             LineCpt += parse.getLineNumber(parse.getExtendedLength(parse)-1);
@@ -74,19 +75,22 @@ public class Analyzer {
     public String getMethodAVGNbLines() throws IOException {
         MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
 
-        int avg = 0;
+        int sumLines = 0;
+        int nbMethods = 0;
 
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(methodVisitor);
+        visitFile(methodVisitor);
+
+        //pas de Map car parfois methodes sans corps
+
+        for(MethodDeclaration method : methodVisitor.getMethods()){
+            if (method.getBody() != null) sumLines += method.getBody().toString().split("\n").length;
+            nbMethods++; //on compte les methodes vides aussi du coup ?
         }
 
-        for (MethodDeclaration m : methodVisitor.getMethods())
-        {
-            //TODO
-        }
+        System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
 
-        return "Il y a en moyenne " + avg + " lignes de code par methodes dans ce projet (arrondi au superieur)";
+        int avg = Math.round((float)sumLines/nbMethods);
+        return "Il y a en moyenne " + avg + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
     }
 
 

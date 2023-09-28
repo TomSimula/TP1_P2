@@ -13,10 +13,12 @@ public class MethodDeclarationVisitor extends AbstractVisitor {
 	public boolean visit(MethodDeclaration node) {
 		hasVisited = true;
 		methods.add(node);
+
 		return super.visit(node);
 	}
-	
+
 	public List<MethodDeclaration> getMethods() {
 		return methods;
 	}
+
 }

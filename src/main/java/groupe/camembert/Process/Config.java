@@ -7,7 +7,8 @@ public class Config {
     public static final String projectSourcePath = projectPath + "/CodeTest";
     public static final String jrePath = "/usr/lib/jvm/java-11-openjdk-amd64/lib/tools.jar";
     */
-    public static final String projectPath = "/home/tom/Documents/M2/913-RestructurationLogiciels/TP1";
+//    public static final String projectPath = "/home/tom/Documents/M2/913-RestructurationLogiciels/TP1";
+    public static final String projectPath = "/home/seb/Documents/M2/913-RestructurationLogiciels/TP1";
     public static final String projectSourcePath = projectPath + "/CodeTest";
     public static final String jrePath = "/usr/lib/jvm/java-11-openjdk-amd64/lib/tools.jar";
 
