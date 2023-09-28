@@ -59,14 +59,13 @@ public class Analyzer {
 
     //5. Nombre moyen de méthodes par classe.
     public String getMethodsAvgPerClass() throws IOException {
-        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
-        MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
-        for (File fileEntry : javaFiles) {
-            CompilationUnit parse = parser.parse(fileEntry);
-            parse.accept(classVisitor);
-            parse.accept(methodVisitor);
-        }
-        int avg = Math.round((float)methodVisitor.getMethods().size()/classVisitor.getTypes().size());
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        visitFile(visitor);
+        int nbAttributes = visitor.getTypes().stream()
+                .map(typeDeclaration -> typeDeclaration.getMethods().length)
+                .reduce(0, Integer::sum);
+        int nbClasses = visitor.getTypes().size();
+        int avg = Math.round((float)nbAttributes/nbClasses);
 
         return "Il y a en moyenne " + avg + " par classes dans ce porjet (arrondie au superieur)";
     }
