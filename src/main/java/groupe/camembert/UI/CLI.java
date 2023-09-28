@@ -19,7 +19,7 @@ public class CLI {
             "8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.\n" +
             "9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
             "10. Les classes qui font partie en même temps des deux catégories précédentes.\n" +
-            //"11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
+            "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
             //"12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             //"13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n"
             ""
@@ -58,6 +58,11 @@ private final Scanner scanner = new Scanner(System.in);
                     break;
                 case 9:
                     res = analyzer.getClassesWithMostAttributes();
+                    break;
+                case 11:
+                    System.out.println("Entrez le nombre de méthodes minimum");
+                    int nb = scanner.nextInt();
+                    res = analyzer.getClassesWithMoreThanXMethods(nb);
                     break;
                 default:
                     break;

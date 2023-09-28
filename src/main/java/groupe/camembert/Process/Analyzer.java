@@ -38,22 +38,6 @@ public class Analyzer {
         return javaFiles;
     }
 
-    //Operations
-
-    //1. Nombre de classes de l’application.
-    public String getNbClasses() throws IOException {
-        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        if(!visitor.hasVisited()) {
-            for (File fileEntry : javaFiles) {
-                CompilationUnit parse = parser.parse(fileEntry);
-                parse.accept(visitor);
-            }
-        }
-
-
-        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet";
-    }
-
     private ASTVisitor getVisitor(String type) {
         ASTVisitor visitor = visitors.get(type);
         if(visitor == null){
@@ -78,6 +62,24 @@ public class Analyzer {
         return visitor;
     }
 
+    //Operations
+
+    //1. Nombre de classes de l’application.
+    public String getNbClasses() throws IOException {
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
+        }
+
+
+        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet";
+    }
+
+
+
     //2. Nombre de lignes de code de l’application.
     public String getNbCodeLines() throws IOException {
         LineCounterVisitor visitor = new LineCounterVisitor();
@@ -89,6 +91,8 @@ public class Analyzer {
                 //visitor.get()  +
                " lignes dans ce projet";
     }
+
+
     //3. Nombre total de méthodes de l’application.
     public String getNbMethods() throws IOException {
         MethodDeclarationVisitor visitor = new MethodDeclarationVisitor();
@@ -98,6 +102,8 @@ public class Analyzer {
         }
         return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet";
     }
+
+
     //4. Nombre total de packages de l’application.
     public String getNbPackages() throws IOException{
         PackageDeclarationVisitor visitor = new PackageDeclarationVisitor();
@@ -192,13 +198,30 @@ public class Analyzer {
 
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
     public String getClassesWithMostAttributesAndMethods() throws IOException {
-        return "";
+       return "";
     }
 
 
     //11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).
-    public String getClassesWithMoreThanXMethods(int X) {
-        return "";
+    public String getClassesWithMoreThanXMethods(int x) throws IOException{
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        if(!visitor.hasVisited()) {
+            for (File fileEntry : javaFiles) {
+                CompilationUnit parse = parser.parse(fileEntry);
+                parse.accept(visitor);
+            }
+        }
+        List<TypeDeclaration> types = visitor.getTypes();
+        types.sort(Comparator.comparingInt(o -> o.getMethods().length));
+        types.removeIf(typeDeclaration -> typeDeclaration.getMethods().length <= x);
+        StringBuilder sb = new StringBuilder();
+        for(TypeDeclaration type : types){
+            sb.append(type.getName().getFullyQualifiedName())
+                    .append(": ")
+                    .append(type.getMethods().length)
+                    .append("\n");
+        }
+        return sb.toString();
     }
 
 
