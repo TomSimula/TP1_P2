@@ -3,6 +3,7 @@ package groupe.camembert.Process;
 import groupe.camembert.visitor.*;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -147,8 +148,22 @@ public class Analyzer {
         return "Il y a en moyenne " + avg + " attribut par classes dans ce porjet (arrondie au superieur)";
     }
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
-    public String getClassesWithMostMethods() {
-        return "";
+    public String getClassesWithMostMethods() throws IOException {
+        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(classVisitor);
+        }
+        List<TypeDeclaration> types = classVisitor.getTypes();
+        types.sort(Comparator.comparingInt(o -> o.getMethods().length));
+        Collections.reverse(types);
+        int tenPercent = Math.round((float)types.size()/10);
+        List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
+        StringBuilder sb = new StringBuilder();
+        for(TypeDeclaration type : tenPercentTypes){
+            sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getMethods().length).append("\n");
+        }
+        return sb.toString();
     }
 
 
@@ -176,7 +191,7 @@ public class Analyzer {
 
 
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
-    public String getClassesWithMostAttributesAndMethods(CompilationUnit parse) {
+    public String getClassesWithMostAttributesAndMethods() throws IOException {
         return "";
     }
 
