@@ -5,6 +5,7 @@ import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,8 +17,19 @@ public class PackageDeclarationVisitor extends ASTVisitor {
         return super.visit(node);
     }
 
-    public List<Name> getPackageNames(){
-        return packages.stream().map(PackageDeclaration::getName).distinct().collect(Collectors.toList());
+    public List<String> getPackageNames(){
+        List<String> names = packages.stream()
+                .map(packageDeclaration -> packageDeclaration.getName().getFullyQualifiedName())
+                .distinct()
+                .toList();
+        List<String> packageNames = new ArrayList<>();
+        for(String name : names){
+            String[] split = name.split("\\.");
+            if(split.length > 1){
+                packageNames.addAll(Arrays.asList(split));
+            }
+        }
+        return packageNames.stream().distinct().toList();
     }
 
 }

@@ -1,9 +1,6 @@
 package groupe.camembert.Process;
 
-import groupe.camembert.visitor.LineCounterVisitor;
-import groupe.camembert.visitor.MethodDeclarationVisitor;
-import groupe.camembert.visitor.PackageDeclarationVisitor;
-import groupe.camembert.visitor.ClassDeclarationVisitor;
+import groupe.camembert.visitor.*;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
@@ -11,6 +8,7 @@ import javax.sound.sampled.Line;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class Analyzer {
@@ -19,7 +17,7 @@ public class Analyzer {
 
 
     public Analyzer() {
-        File folder = new File(parser.projectSourcePath);
+        File folder = new File(Config.projectSourcePath);
         this.javaFiles = listJavaFilesForFolder(folder);
     }
 
@@ -76,6 +74,7 @@ public class Analyzer {
             parse.accept(visitor);
         }
 
+        List<String> names = visitor.getPackageNames();
         return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet";
     }
     //5. Nombre moyen de méthodes par classe.
@@ -91,13 +90,27 @@ public class Analyzer {
 
         return "Il y a en moyenne " + avg + " par classes dans ce porjet (arrondie au superieur)";
     }
+
+
     //6. Nombre moyen de lignes de code par méthode.
     public String getMethodAVGNbLines() {
         return "";
     }
+
+
     //7. Nombre moyen d’attributs par classe.
-    public String getClassAVGAttributes(CompilationUnit parse) {
-        return "";
+    public String getClassAVGAttributes() throws IOException{
+        ClassDeclarationVisitor classVisitor = new ClassDeclarationVisitor();
+        AttributeDeclarationVisitor attributeVisitor = new AttributeDeclarationVisitor();
+        for (File fileEntry : javaFiles) {
+            CompilationUnit parse = parser.parse(fileEntry);
+            parse.accept(classVisitor);
+            parse.accept(attributeVisitor);
+        }
+
+        int avg = Math.round((float)attributeVisitor.getAttributes().size()/classVisitor.getTypes().size());
+
+        return "Il y a en moyenne " + avg + " attribut par classes dans ce porjet (arrondie au superieur)";
     }
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
     public String getClassesWithMostMethods() {

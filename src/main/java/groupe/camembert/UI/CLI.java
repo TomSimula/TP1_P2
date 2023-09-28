@@ -14,7 +14,7 @@ public class CLI {
             "3. Nombre total de méthodes.\n" +
             "4. Nombre total de packages.\n" +
             "5. Nombre moyen de méthodes par classe.\n" +
-            //"6. Nombre moyen d'attributs par classe.\n" +
+            "6. Nombre moyen d'attributs par classe.\n" +
             //"7. Les 10% des classes qui possèdent le plus grand nombre de méthodes.\n" +
             //"8. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
             //"9. Les classes qui font partie en même temps des deux catégories précédentes.\n" +
@@ -49,8 +49,12 @@ private final Scanner scanner = new Scanner(System.in);
                 case 5:
                     res = analyzer.getMethodsAvgPerClass();
                     break;
+                case 6:
+                    res = analyzer.getClassAVGAttributes();
+                    break;
                 default:
                     break;
+
 
             }
             System.out.println(res);
