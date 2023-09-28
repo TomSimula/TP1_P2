@@ -9,8 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PackageDeclarationVisitor extends ASTVisitor {
-    List<PackageDeclaration> packages = new ArrayList<>();
+public class PackageDeclarationVisitor extends AbstractVisitor {
+    private List<PackageDeclaration> packages = new ArrayList<>();
+    private boolean hasVisited = false;
 
     public boolean visit(PackageDeclaration node){
         packages.add(node);
@@ -18,6 +19,7 @@ public class PackageDeclarationVisitor extends ASTVisitor {
     }
 
     public List<String> getPackageNames(){
+        hasVisited = true;
         List<String> names = packages.stream()
                 .map(packageDeclaration -> packageDeclaration.getName().getFullyQualifiedName())
                 .distinct()

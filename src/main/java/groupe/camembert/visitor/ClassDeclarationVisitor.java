@@ -7,8 +7,8 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassDeclarationVisitor extends ASTVisitor {
-	List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
+public class ClassDeclarationVisitor extends AbstractVisitor {
+	private List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
 	private boolean hasVisited = false;
 
 	
@@ -25,10 +25,6 @@ public class ClassDeclarationVisitor extends ASTVisitor {
 		return types;
 	}
 
-
-	public boolean hasVisited() {
-		return hasVisited;
-	}
 }
 
 
