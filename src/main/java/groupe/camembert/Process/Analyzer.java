@@ -132,8 +132,20 @@ public class Analyzer {
 
 
     //11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).
-    public String getClassesWithMoreThanXMethods(int X) {
-        return "";
+    public String getClassesWithMoreThanXMethods(int x) throws IOException{
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        visitFile(visitor);
+        List<TypeDeclaration> types = visitor.getTypes();
+        types.sort(Comparator.comparingInt(o -> o.getMethods().length));
+        types.removeIf(typeDeclaration -> typeDeclaration.getMethods().length <= x);
+        StringBuilder sb = new StringBuilder();
+        for(TypeDeclaration type : types){
+            sb.append(type.getName().getFullyQualifiedName())
+                    .append(": ")
+                    .append(type.getMethods().length)
+                    .append("\n");
+        }
+        return sb.toString();
     }
 
 
