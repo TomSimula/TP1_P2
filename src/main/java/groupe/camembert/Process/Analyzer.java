@@ -28,7 +28,7 @@ public class Analyzer {
     public String getNbClasses() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
-        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet";
+        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet\n";
     }
 
     //2. Nombre de lignes de code de l’application.
@@ -40,21 +40,21 @@ public class Analyzer {
             CompilationUnit parse = parser.parse(fileEntry);
             LineCpt += parse.getLineNumber(parse.getExtendedLength(parse)-1);
         }
-        return "Il y a " + LineCpt + " lignes dans ce projet";
+        return "Il y a " + LineCpt + " lignes dans ce projet\n";
     }
 
     //3. Nombre total de méthodes de l’application.
     public String getNbMethods() throws IOException {
         MethodDeclarationVisitor visitor = new MethodDeclarationVisitor();
         visitFile(visitor);
-        return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet";
+        return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet\n";
     }
 
     //4. Nombre total de packages de l’application.
     public String getNbPackages() throws IOException{
         PackageDeclarationVisitor visitor = new PackageDeclarationVisitor();
         visitFile(visitor);
-        return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet";
+        return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet\n";
     }
 
     //5. Nombre moyen de méthodes par classe.
@@ -67,7 +67,7 @@ public class Analyzer {
         int nbClasses = visitor.getTypes().size();
         int avg = Math.round((float)nbAttributes/nbClasses);
 
-        return "Il y a en moyenne " + avg + " par classes dans ce porjet (arrondie au superieur)";
+        return "Il y a en moyenne " + avg + "methodes par classe dans ce projet (arrondi au superieur)";
     }
 
 
@@ -104,7 +104,7 @@ public class Analyzer {
         int nbClasses = visitor.getTypes().size();
         int avg = Math.round((float)nbAttributes/nbClasses);
 
-        return "Il y a en moyenne " + avg + " attribut par classes dans ce porjet (arrondie au superieur)";
+        return "Il y a en moyenne " + avg + " attribut par classes dans ce projet (arrondi au superieur)\n";
     }
 
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
@@ -120,7 +120,7 @@ public class Analyzer {
         for(TypeDeclaration type : tenPercentTypes){
             sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getMethods().length).append("\n");
         }
-        return sb.toString();
+        return sb.toString()+ "\n";
     }
 
 
@@ -137,14 +137,35 @@ public class Analyzer {
         for(TypeDeclaration type : tenPercentTypes){
             sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getFields().length).append("\n");
         }
-        return sb.toString();
+        return sb.toString()+ "\n";
     }
 
 
 
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
     public String getClassesWithMostAttributesAndMethods() throws IOException {
-        return "";
+
+        String str1 = getClassesWithMostAttributes();
+        String str2 = getClassesWithMostMethods();
+
+        String[] str1Tab = str1.split("\n");
+        String[] str2Tab = str2.split("\n");
+
+        List<String> str1List = new ArrayList<>(List.of(str1Tab));
+        List<String> str2List = new ArrayList<>(List.of(str2Tab));
+
+        //regex to delete the number of attributes/methods
+        String regex = ": [0-9]+";
+
+        str1List.replaceAll(s -> s.replaceAll(regex, ""));
+        str2List.replaceAll(s -> s.replaceAll(regex, ""));
+
+        str1List.retainAll(str2List);
+
+        return "Les classes qui font partie en même temps " +
+                "des 10% des classes qui possèdent le plus grand nombre de méthodes et " +
+                "des 10% des classes qui possèdent le plus grand nombre d’attributs sont " +
+                ": \n" + String.join("\n", str1List) + "\n";
     }
 
 
@@ -162,7 +183,7 @@ public class Analyzer {
                     .append(type.getMethods().length)
                     .append("\n");
         }
-        return sb.toString();
+        return sb.toString()+ "\n";
     }
 
 
@@ -184,7 +205,7 @@ public class Analyzer {
                 max = nbParams;
             }
         }
-        return "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + max;
+        return "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + max+ "\n";
     }
 
     private ArrayList<File> listJavaFilesForFolder(final File folder) {

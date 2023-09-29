@@ -62,6 +62,9 @@ private final Scanner scanner = new Scanner(System.in);
                 case 9:
                     res = analyzer.getClassesWithMostAttributes();
                     break;
+                case 10:
+                    res = analyzer.getClassesWithMostAttributesAndMethods();
+                    break;
                 case 11:
                     System.out.println("Entrez le nombre de méthodes minimum");
                     int nb = scanner.nextInt();
