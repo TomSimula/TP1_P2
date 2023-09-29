@@ -67,7 +67,7 @@ public class Analyzer {
         int nbClasses = visitor.getTypes().size();
         int avg = Math.round((float)nbAttributes/nbClasses);
 
-        return "Il y a en moyenne " + avg + "methodes par classe dans ce projet (arrondi au superieur)";
+        return "Il y a en moyenne " + avg + " methodes par classe dans ce projet (arrondi au superieur)";
     }
 
 
@@ -87,7 +87,7 @@ public class Analyzer {
             nbMethods++; //on compte les methodes vides aussi du coup ?
         }
 
-        System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
+        //System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
 
         int avg = Math.round((float)sumLines/nbMethods);
         return "Il y a en moyenne " + avg + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
@@ -183,7 +183,7 @@ public class Analyzer {
                     .append(type.getMethods().length)
                     .append("\n");
         }
-        return sb.toString()+ "\n";
+        return sb.toString();
     }
 
 
