@@ -36,25 +36,25 @@ private final Scanner scanner = new Scanner(System.in);
             option = scanner.nextInt();
             switch(option) {
                 case 1:
-                    res = analyzer.getNbClasses();
+                    res = "Il y a " + analyzer.getNbClasses() + " classes dans ce projet\n";
                     break;
                 case 2:
-                    res = analyzer.getNbCodeLines();
+                    res = "Il y a " + analyzer.getNbCodeLines() + " lignes dans ce projet\n";
                     break;
                 case 3:
-                    res = analyzer.getNbMethods();
+                    res = "Il y a " + analyzer.getNbMethods() + " methodes dans ce projet\n";
                     break;
                 case 4:
-                    res = analyzer.getNbPackages();
+                    res = "Il y a " + analyzer.getNbPackages() + " packages dans ce projet\n";
                     break;
                 case 5:
-                    res = analyzer.getMethodsAvgPerClass();
+                    res = "Il y a en moyenne " + analyzer.getMethodsAvgPerClass() + " methodes par classe dans ce projet (arrondi au superieur)";
                     break;
                 case 6:
-                    res = analyzer.getMethodAVGNbLines();
+                    res = "Il y a en moyenne " + analyzer.getMethodAVGNbLines() + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
                     break;
                 case 7:
-                    res = analyzer.getAttributeAvgPerClass();
+                    res = "Il y a en moyenne " + analyzer.getAttributeAvgPerClass() + " attribut par classes dans ce projet (arrondi au superieur)\n";
                     break;
                 case 8:
                     res = analyzer.getClassesWithMostMethods();
@@ -74,7 +74,7 @@ private final Scanner scanner = new Scanner(System.in);
                     res = analyzer.getMethodsWithMostLines();
                     break;
                 case 13:
-                    res = analyzer.getMaxParams();
+                    res = "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + analyzer.getMaxParams() + "\n";
                     break;
                 default:
                     break;

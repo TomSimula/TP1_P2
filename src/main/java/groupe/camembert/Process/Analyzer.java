@@ -25,58 +25,50 @@ public class Analyzer {
     //Operations
 
     //1. Nombre de classes de l’application.
-    public String getNbClasses() throws IOException {
+    public int getNbClasses() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
-        return "Il y a " + visitor.getTypes().size() + " classes dans ce projet\n";
+
+        return visitor.getTypes().size();
     }
 
     //2. Nombre de lignes de code de l’application.
-    public String getNbCodeLines() throws IOException {
-
+    public int getNbCodeLines() throws IOException {
         int LineCpt = 0;
-
         for (File fileEntry : javaFiles) {
             CompilationUnit parse = parser.parse(fileEntry);
             LineCpt += parse.getLineNumber(parse.getExtendedLength(parse)-1);
         }
-        return "Il y a " + LineCpt + " lignes dans ce projet\n";
+        return LineCpt;
     }
 
     //3. Nombre total de méthodes de l’application.
-    public String getNbMethods() throws IOException {
+    public int getNbMethods() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         int nbMethods = visitor.getTypes().stream()
                 .map(typeDeclaration -> typeDeclaration.getMethods().length)
                 .reduce(0, Integer::sum);
 
-        return "Il y a " + nbMethods + " methodes dans ce projet\n";
+        return nbMethods;
     }
 
     //4. Nombre total de packages de l’application.
-    public String getNbPackages() throws IOException{
+    public int getNbPackages() throws IOException{
         PackageDeclarationVisitor visitor = (PackageDeclarationVisitor) getVisitor("package");
         visitFile(visitor);
-        return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet\n";
+
+        return visitor.getPackageNames().size();
     }
 
     //5. Nombre moyen de méthodes par classe.
-    public String getMethodsAvgPerClass() throws IOException {
-        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
-        int nbAttributes = visitor.getTypes().stream()
-                .map(typeDeclaration -> typeDeclaration.getMethods().length)
-                .reduce(0, Integer::sum);
-        int nbClasses = visitor.getTypes().size();
-        int avg = Math.round((float)nbAttributes/nbClasses);
-
-        return "Il y a en moyenne " + avg + " methodes par classe dans ce projet (arrondi au superieur)";
+    public int getMethodsAvgPerClass() throws IOException {
+        return Math.round((float)getNbMethods()/getNbClasses());
     }
 
 
     //6. Nombre moyen de lignes de code par méthode.
-    public String getMethodAVGNbLines() throws IOException {
+    public int getMethodAVGNbLines() throws IOException {
         MethodDeclarationVisitor methodVisitor = (MethodDeclarationVisitor) getVisitor("method");
 
         int sumLines = 0;
@@ -94,12 +86,12 @@ public class Analyzer {
         //System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
 
         int avg = Math.round((float)sumLines/nbMethods);
-        return "Il y a en moyenne " + avg + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
+        return avg;
     }
 
 
     //7. Nombre moyen d’attributs par classe.
-    public String getAttributeAvgPerClass() throws IOException{
+    public int getAttributeAvgPerClass() throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         int nbAttributes = visitor.getTypes().stream()
@@ -108,7 +100,7 @@ public class Analyzer {
         int nbClasses = visitor.getTypes().size();
         int avg = Math.round((float)nbAttributes/nbClasses);
 
-        return "Il y a en moyenne " + avg + " attribut par classes dans ce projet (arrondi au superieur)\n";
+        return avg;
     }
 
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
@@ -116,8 +108,10 @@ public class Analyzer {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
-        types.sort(Comparator.comparingInt(o -> o.getMethods().length));
+        Collections.sort(types, Comparator.comparing(o -> o.getName().toString()));
+        types.sort(Comparator.comparingInt(o ->o.getMethods().length));
         Collections.reverse(types);
+
         int tenPercent = Math.round((float)types.size()/10);
         List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
         StringBuilder sb = new StringBuilder();
@@ -133,6 +127,7 @@ public class Analyzer {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
+        Collections.sort(types, Comparator.comparing(o -> o.getName().toString()));
         types.sort(Comparator.comparingInt(o -> o.getFields().length));
         Collections.reverse(types);
         int tenPercent = Math.round((float)types.size()/10);
@@ -227,7 +222,7 @@ public class Analyzer {
 
 
     //13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.
-    public String getMaxParams() throws IOException {
+    public int getMaxParams() throws IOException {
         MethodDeclarationVisitor visitor = (MethodDeclarationVisitor) getVisitor("method");
         visitFile(visitor);
         List<MethodDeclaration> methods = visitor.getMethods();
@@ -238,7 +233,7 @@ public class Analyzer {
                 max = nbParams;
             }
         }
-        return "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + max+ "\n";
+        return max;
     }
 
     private ArrayList<File> listJavaFilesForFolder(final File folder) {
