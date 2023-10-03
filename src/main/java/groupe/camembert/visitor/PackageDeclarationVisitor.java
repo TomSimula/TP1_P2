@@ -11,15 +11,14 @@ import java.util.stream.Collectors;
 
 public class PackageDeclarationVisitor extends AbstractVisitor {
     private List<PackageDeclaration> packages = new ArrayList<>();
-    private boolean hasVisited = false;
 
     public boolean visit(PackageDeclaration node){
         packages.add(node);
+        hasVisited = true;
         return super.visit(node);
     }
 
     public List<String> getPackageNames(){
-        hasVisited = true;
         List<String> names = packages.stream()
                 .map(packageDeclaration -> packageDeclaration.getName().getFullyQualifiedName())
                 .distinct()

@@ -54,7 +54,7 @@ private final Scanner scanner = new Scanner(System.in);
                     res = analyzer.getMethodAVGNbLines();
                     break;
                 case 7:
-                    res = analyzer.getClassAVGAttributes();
+                    res = analyzer.getAttributeAvgPerClass();
                     break;
                 case 8:
                     res = analyzer.getClassesWithMostMethods();

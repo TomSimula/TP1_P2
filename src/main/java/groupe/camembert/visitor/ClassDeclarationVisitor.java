@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ClassDeclarationVisitor extends AbstractVisitor {
 	private List<TypeDeclaration> types = new ArrayList<TypeDeclaration>();
-	private boolean hasVisited = false;
 
 	
 	public boolean visit(TypeDeclaration node) {

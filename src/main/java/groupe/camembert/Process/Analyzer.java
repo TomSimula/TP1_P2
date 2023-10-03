@@ -45,14 +45,18 @@ public class Analyzer {
 
     //3. Nombre total de méthodes de l’application.
     public String getNbMethods() throws IOException {
-        MethodDeclarationVisitor visitor = new MethodDeclarationVisitor();
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
-        return "Il y a " + visitor.getMethods().size() + " methodes dans ce projet\n";
+        int nbMethods = visitor.getTypes().stream()
+                .map(typeDeclaration -> typeDeclaration.getMethods().length)
+                .reduce(0, Integer::sum);
+
+        return "Il y a " + nbMethods + " methodes dans ce projet\n";
     }
 
     //4. Nombre total de packages de l’application.
     public String getNbPackages() throws IOException{
-        PackageDeclarationVisitor visitor = new PackageDeclarationVisitor();
+        PackageDeclarationVisitor visitor = (PackageDeclarationVisitor) getVisitor("package");
         visitFile(visitor);
         return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet\n";
     }
@@ -73,7 +77,7 @@ public class Analyzer {
 
     //6. Nombre moyen de lignes de code par méthode.
     public String getMethodAVGNbLines() throws IOException {
-        MethodDeclarationVisitor methodVisitor = new MethodDeclarationVisitor();
+        MethodDeclarationVisitor methodVisitor = (MethodDeclarationVisitor) getVisitor("method");
 
         int sumLines = 0;
         int nbMethods = 0;
@@ -95,7 +99,7 @@ public class Analyzer {
 
 
     //7. Nombre moyen d’attributs par classe.
-    public String getClassAVGAttributes() throws IOException{
+    public String getAttributeAvgPerClass() throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         int nbAttributes = visitor.getTypes().stream()

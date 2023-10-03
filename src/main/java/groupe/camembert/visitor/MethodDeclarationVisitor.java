@@ -8,8 +8,7 @@ import java.util.List;
 
 public class MethodDeclarationVisitor extends AbstractVisitor {
 	private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
-	private boolean hasVisited = false;
-	
+
 	public boolean visit(MethodDeclaration node) {
 		hasVisited = true;
 		methods.add(node);

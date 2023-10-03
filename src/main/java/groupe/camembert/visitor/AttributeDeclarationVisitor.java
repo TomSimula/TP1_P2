@@ -8,7 +8,6 @@ import java.util.List;
 
 public class AttributeDeclarationVisitor extends AbstractVisitor {
     private List<FieldDeclaration> attributes = new ArrayList<>();
-    private boolean hasVisited = false;
 
     public boolean visit(FieldDeclaration node) {
         hasVisited = true;
