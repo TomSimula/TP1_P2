@@ -37,6 +37,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-Config.java
+*Config.java
 pom.xml
 
