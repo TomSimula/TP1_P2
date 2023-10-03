@@ -192,8 +192,37 @@ public class Analyzer {
 
 
     //12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).
-    public String getClassesWithMostLines() {
-        return "";
+    public String getMethodsWithMostLines() throws IOException {
+
+        ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
+        visitFile(visitor);
+        List<TypeDeclaration> types = visitor.getTypes();
+
+        StringBuilder sb = new StringBuilder();
+        for (TypeDeclaration type : types) {
+            List<MethodDeclaration> methods = new ArrayList<>(Arrays.asList(type.getMethods()));
+
+            methods.sort(Comparator.comparingInt(o -> {
+                if (o.getBody() == null) return 0;
+                else return o.getBody().toString().split("\n").length;
+            }));
+            Collections.reverse(methods);
+            int tenPercent = (int) Math.ceil((float) methods.size() / 10);
+            List<MethodDeclaration> tenPercentMethods = methods.subList(0, tenPercent);
+            tenPercentMethods.removeIf(methodDeclaration -> methodDeclaration.getBody() == null);
+            if (tenPercentMethods.size() > 0) {
+                sb.append("\n-Plus grande(s) Methode(s) de la classe ")
+                        .append(type.getName().getFullyQualifiedName())
+                        .append(" : \n");
+                for (MethodDeclaration method : tenPercentMethods) {
+                    sb.append(method.getName().getFullyQualifiedName())
+                            .append(": ")
+                            .append(method.getBody().toString().split("\n").length)
+                            .append(" lignes\n");
+                }
+            }
+        }
+        return sb.toString() + "\n";
     }
 
 

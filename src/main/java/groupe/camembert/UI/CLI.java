@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class CLI {
     private final String menu =
-            "Choisissez l'analyse à réaliser: \n" +
+            "Choisissez l'analyse à réaliser: (0 pour Quitter).\n"+
             "1. Nombre de classes.\n" +
             "2. Nombre de lignes de code.\n" +
             "3. Nombre total de méthodes.\n" +
@@ -20,7 +20,7 @@ public class CLI {
             "9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
             "10. Les classes qui font partie en même temps des deux catégories précédentes.\n" +
             "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
-            //"12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
+            "12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
             ""
     ;
@@ -70,7 +70,9 @@ private final Scanner scanner = new Scanner(System.in);
                     int nb = scanner.nextInt();
                     res = analyzer.getClassesWithMoreThanXMethods(nb);
                     break;
-
+                case 12:
+                    res = analyzer.getMethodsWithMostLines();
+                    break;
                 case 13:
                     res = analyzer.getMaxParams();
                     break;
