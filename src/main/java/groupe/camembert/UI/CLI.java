@@ -22,11 +22,12 @@ public class CLI {
             "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
             //"12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
+                    "14. Method calls\n" +
             ""
     ;
 
-private final Analyzer analyzer = new Analyzer();
-private final Scanner scanner = new Scanner(System.in);
+    private final Analyzer analyzer = new Analyzer();
+    private final Scanner scanner = new Scanner(System.in);
 
     public void run() throws IOException {
         int option = -1;
@@ -73,6 +74,9 @@ private final Scanner scanner = new Scanner(System.in);
 
                 case 13:
                     res = analyzer.getMaxParams();
+                    break;
+                case 14:
+                    analyzer.getCallGraph();
                     break;
                 default:
                     break;

@@ -1,10 +1,7 @@
 package groupe.camembert.Process;
 
 import groupe.camembert.visitor.*;
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +24,7 @@ public class Analyzer {
     //1. Nombre de classes de l’application.
     public String getNbClasses() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         return "Il y a " + visitor.getTypes().size() + " classes dans ce projet\n";
     }
 
@@ -46,7 +43,7 @@ public class Analyzer {
     //3. Nombre total de méthodes de l’application.
     public String getNbMethods() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         int nbMethods = visitor.getTypes().stream()
                 .map(typeDeclaration -> typeDeclaration.getMethods().length)
                 .reduce(0, Integer::sum);
@@ -57,14 +54,14 @@ public class Analyzer {
     //4. Nombre total de packages de l’application.
     public String getNbPackages() throws IOException{
         PackageDeclarationVisitor visitor = (PackageDeclarationVisitor) getVisitor("package");
-        visitFile(visitor);
+        visitProject(visitor);
         return "Il y a " + visitor.getPackageNames().size() + " packages dans ce projet\n";
     }
 
     //5. Nombre moyen de méthodes par classe.
     public String getMethodsAvgPerClass() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         int nbAttributes = visitor.getTypes().stream()
                 .map(typeDeclaration -> typeDeclaration.getMethods().length)
                 .reduce(0, Integer::sum);
@@ -82,7 +79,7 @@ public class Analyzer {
         int sumLines = 0;
         int nbMethods = 0;
 
-        visitFile(methodVisitor);
+        visitProject(methodVisitor);
 
         //pas de Map car parfois methodes sans corps
 
@@ -101,7 +98,7 @@ public class Analyzer {
     //7. Nombre moyen d’attributs par classe.
     public String getAttributeAvgPerClass() throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         int nbAttributes = visitor.getTypes().stream()
                 .map(typeDeclaration -> typeDeclaration.getFields().length)
                 .reduce(0, Integer::sum);
@@ -114,7 +111,7 @@ public class Analyzer {
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
     public String getClassesWithMostMethods() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getMethods().length));
         Collections.reverse(types);
@@ -131,7 +128,7 @@ public class Analyzer {
     //9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.
     public String getClassesWithMostAttributes() throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getFields().length));
         Collections.reverse(types);
@@ -176,7 +173,7 @@ public class Analyzer {
     //11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).
     public String getClassesWithMoreThanXMethods(int x) throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
-        visitFile(visitor);
+        visitProject(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getMethods().length));
         types.removeIf(typeDeclaration -> typeDeclaration.getMethods().length <= x);
@@ -200,7 +197,7 @@ public class Analyzer {
     //13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.
     public String getMaxParams() throws IOException {
         MethodDeclarationVisitor visitor = (MethodDeclarationVisitor) getVisitor("method");
-        visitFile(visitor);
+        visitProject(visitor);
         List<MethodDeclaration> methods = visitor.getMethods();
         int max = 0;
         for(MethodDeclaration method : methods){
@@ -210,6 +207,33 @@ public class Analyzer {
             }
         }
         return "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + max+ "\n";
+    }
+
+
+    public void getCallGraph() throws IOException {
+        ClassDeclarationVisitor classVisitor = (ClassDeclarationVisitor) getVisitor("class");
+        visitProject(classVisitor);
+        StringBuilder sb = new StringBuilder();
+        for(TypeDeclaration clazz: classVisitor.getTypes().subList(0, 2)){
+            for(MethodDeclaration method: clazz.getMethods()){
+                MethodInvocationVisitor methodVisitor = new MethodInvocationVisitor();
+                method.accept(methodVisitor);
+                List<MethodInvocation> methodInvocations = methodVisitor.getCalls();
+                if(!methodInvocations.isEmpty()){
+                    sb.append(clazz.resolveBinding().getQualifiedName())
+                            .append("::")
+                            .append(method.getName().getFullyQualifiedName())
+                            .append(" -> ");
+                    for(MethodInvocation methodInvocation : methodInvocations){
+                        sb.append(methodInvocation.getName())
+                                .append("::").append(methodInvocation.getExpression().resolveTypeBinding().getQualifiedName())
+                                .append("\n");
+                    }
+                }
+            }
+        }
+        System.out.println(sb);
+
     }
 
     private ArrayList<File> listJavaFilesForFolder(final File folder) {
@@ -241,6 +265,9 @@ public class Analyzer {
                 case "package":
                     visitor = new PackageDeclarationVisitor();
                     break;
+                case "methodCall":
+                    visitor = new MethodInvocationVisitor();
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + type);
             }
@@ -249,7 +276,7 @@ public class Analyzer {
         return visitor;
     }
 
-    private void visitFile(AbstractVisitor visitor) throws IOException {
+    private void visitProject(AbstractVisitor visitor) throws IOException {
         if(!visitor.hasVisited()){
             for (File fileEntry : javaFiles) {
                 CompilationUnit parse = parser.parse(fileEntry);
