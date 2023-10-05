@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class CLI {
     private final String menu =
-            "Choisissez l'analyse à réaliser: \n" +
+            "Choisissez l'analyse à réaliser: (0 pour Quitter).\n"+
             "1. Nombre de classes.\n" +
             "2. Nombre de lignes de code.\n" +
             "3. Nombre total de méthodes.\n" +
@@ -20,7 +20,7 @@ public class CLI {
             "9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
             "10. Les classes qui font partie en même temps des deux catégories précédentes.\n" +
             "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
-            //"12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
+            "12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
                     "14. Method calls\n" +
             ""
@@ -37,25 +37,25 @@ public class CLI {
             option = scanner.nextInt();
             switch(option) {
                 case 1:
-                    res = analyzer.getNbClasses();
+                    res = "Il y a " + analyzer.getNbClasses() + " classes dans ce projet\n";
                     break;
                 case 2:
-                    res = analyzer.getNbCodeLines();
+                    res = "Il y a " + analyzer.getNbCodeLines() + " lignes dans ce projet\n";
                     break;
                 case 3:
-                    res = analyzer.getNbMethods();
+                    res = "Il y a " + analyzer.getNbMethods() + " methodes dans ce projet\n";
                     break;
                 case 4:
-                    res = analyzer.getNbPackages();
+                    res = "Il y a " + analyzer.getNbPackages() + " packages dans ce projet\n";
                     break;
                 case 5:
-                    res = analyzer.getMethodsAvgPerClass();
+                    res = "Il y a en moyenne " + analyzer.getMethodsAvgPerClass() + " methodes par classe dans ce projet (arrondi au superieur)";
                     break;
                 case 6:
-                    res = analyzer.getMethodAVGNbLines();
+                    res = "Il y a en moyenne " + analyzer.getMethodAVGNbLines() + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
                     break;
                 case 7:
-                    res = analyzer.getAttributeAvgPerClass();
+                    res = "Il y a en moyenne " + analyzer.getAttributeAvgPerClass() + " attribut par classes dans ce projet (arrondi au superieur)\n";
                     break;
                 case 8:
                     res = analyzer.getClassesWithMostMethods();
@@ -71,9 +71,11 @@ public class CLI {
                     int nb = scanner.nextInt();
                     res = analyzer.getClassesWithMoreThanXMethods(nb);
                     break;
-
+                case 12:
+                    res = analyzer.getMethodsWithMostLines();
+                    break;
                 case 13:
-                    res = analyzer.getMaxParams();
+                    res = "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + analyzer.getMaxParams() + "\n";
                     break;
                 case 14:
                     analyzer.getCallGraph();
