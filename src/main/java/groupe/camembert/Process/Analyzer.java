@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Analyzer {
@@ -104,7 +105,7 @@ public class Analyzer {
     }
 
     //8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.
-    public String getClassesWithMostMethods() throws IOException {
+    public List<TypeDeclaration> getClassesWithMostMethods() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
@@ -114,16 +115,16 @@ public class Analyzer {
 
         int tenPercent = Math.round((float)types.size()/10);
         List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
-        StringBuilder sb = new StringBuilder();
+        /*StringBuilder sb = new StringBuilder();
         for(TypeDeclaration type : tenPercentTypes){
             sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getMethods().length).append("\n");
-        }
-        return sb.toString()+ "\n";
+        }*/
+        return tenPercentTypes;
     }
 
 
     //9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.
-    public String getClassesWithMostAttributes() throws IOException{
+    public List<TypeDeclaration> getClassesWithMostAttributes() throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
@@ -132,20 +133,19 @@ public class Analyzer {
         Collections.reverse(types);
         int tenPercent = Math.round((float)types.size()/10);
         List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
-        StringBuilder sb = new StringBuilder();
+        /*StringBuilder sb = new StringBuilder();
         for(TypeDeclaration type : tenPercentTypes){
             sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getFields().length).append("\n");
-        }
-        return sb.toString()+ "\n";
+        }*/
+        return tenPercentTypes;
     }
 
 
 
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
-    public String getClassesWithMostAttributesAndMethods() throws IOException {
+    public Set<TypeDeclaration> getClassesWithMostAttributesAndMethods() throws IOException {
 
-        String str1 = getClassesWithMostAttributes();
-        String str2 = getClassesWithMostMethods();
+        /*
 
         String[] str1Tab = str1.split("\n");
         String[] str2Tab = str2.split("\n");
@@ -159,30 +159,35 @@ public class Analyzer {
         str1List.replaceAll(s -> s.replaceAll(regex, ""));
         str2List.replaceAll(s -> s.replaceAll(regex, ""));
 
-        str1List.retainAll(str2List);
+        str1List.retainAll(str2List);*/
 
-        return "Les classes qui font partie en même temps " +
-                "des 10% des classes qui possèdent le plus grand nombre de méthodes et " +
-                "des 10% des classes qui possèdent le plus grand nombre d’attributs sont " +
-                ": \n" + String.join("\n", str1List) + "\n";
+        List<TypeDeclaration> l1 = getClassesWithMostAttributes();
+        List<TypeDeclaration> l2 = getClassesWithMostMethods();
+
+        Set<TypeDeclaration> result = l1.stream()
+                .distinct()
+                .filter(l2::contains)
+                .collect(Collectors.toSet());
+
+        return result;
     }
 
 
     //11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).
-    public String getClassesWithMoreThanXMethods(int x) throws IOException{
+    public List<TypeDeclaration> getClassesWithMoreThanXMethods(int x) throws IOException{
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitFile(visitor);
         List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getMethods().length));
         types.removeIf(typeDeclaration -> typeDeclaration.getMethods().length <= x);
-        StringBuilder sb = new StringBuilder();
+        /*StringBuilder sb = new StringBuilder();
         for(TypeDeclaration type : types){
             sb.append(type.getName().getFullyQualifiedName())
                     .append(": ")
                     .append(type.getMethods().length)
                     .append("\n");
-        }
-        return sb.toString();
+        }*/
+        return types;
     }
 
 

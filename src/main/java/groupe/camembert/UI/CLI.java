@@ -2,9 +2,12 @@ package groupe.camembert.UI;
 
 
 import groupe.camembert.Process.Analyzer;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class CLI {
     private final String menu =
@@ -31,6 +34,7 @@ private final Scanner scanner = new Scanner(System.in);
     public void run() throws IOException {
         int option = -1;
         String res = "";
+        List<TypeDeclaration> listTD;
         while(option != 0){
             System.out.println(menu);
             option = scanner.nextInt();
@@ -57,18 +61,26 @@ private final Scanner scanner = new Scanner(System.in);
                     res = "Il y a en moyenne " + analyzer.getAttributeAvgPerClass() + " attribut par classes dans ce projet (arrondi au superieur)\n";
                     break;
                 case 8:
-                    res = analyzer.getClassesWithMostMethods();
+                    listTD = analyzer.getClassesWithMostMethods();
+                    for(TypeDeclaration type : listTD)
+                        res += type.getName().getFullyQualifiedName() + ": " + type.getMethods().length + ("\n");
                     break;
                 case 9:
-                    res = analyzer.getClassesWithMostAttributes();
+                    listTD = analyzer.getClassesWithMostAttributes();
+                    for(TypeDeclaration type : listTD)
+                        res += type.getName().getFullyQualifiedName() + ": " + type.getFields().length + ("\n");
                     break;
                 case 10:
-                    res = analyzer.getClassesWithMostAttributesAndMethods();
+                    Set<TypeDeclaration> setClassQ10 = analyzer.getClassesWithMostAttributesAndMethods();
+                    for(TypeDeclaration type : setClassQ10)
+                        res += type.getName().getFullyQualifiedName() + ("\n");
                     break;
                 case 11:
                     System.out.println("Entrez le nombre de méthodes minimum");
                     int nb = scanner.nextInt();
-                    res = analyzer.getClassesWithMoreThanXMethods(nb);
+                    listTD = analyzer.getClassesWithMoreThanXMethods(nb);
+                    for(TypeDeclaration type : listTD)
+                        res += type.getName().getFullyQualifiedName() + ": " + type.getMethods().length + ("\n");
                     break;
                 case 12:
                     res = analyzer.getMethodsWithMostLines();
