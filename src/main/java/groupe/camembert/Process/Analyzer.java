@@ -244,7 +244,7 @@ public class Analyzer {
         visitProject(visitor);
         CallGraph graph = new CallGraph();
 
-        for(TypeDeclaration clazz: visitor.getTypes().subList(0, 3)) {
+        for(TypeDeclaration clazz: visitor.getTypes().subList(0, 1)) {
             CallGraph sousGraph = buildClassCallGraph(clazz);
             graph = graph.merge(sousGraph);
         }
@@ -260,9 +260,16 @@ public class Analyzer {
             List<MethodInvocation> methodInvocations = methodInvocationVisitor.getMethodInvocations();
             List<String> calledMethods = new ArrayList<>();
             for(MethodInvocation methodInvocation: methodInvocations) {
-                ITypeBinding typeBinding = methodInvocation.getExpression().resolveTypeBinding();
+                Expression expression = methodInvocation.getExpression();
+                ITypeBinding typeBinding;
+                if(expression == null) {
+                    typeBinding = clazz.resolveBinding();
+                } else {
+                    typeBinding = expression.resolveTypeBinding();
+                }
                 if(typeBinding != null) {
-                    calledMethods.add(typeBinding.getQualifiedName() + "." + methodInvocation.getName());
+                    String calleeFullName = isTypeInProject(typeBinding) ? typeBinding.getQualifiedName() : typeBinding.getName();
+                    calledMethods.add(calleeFullName + "." + methodInvocation.getName().getIdentifier());
                 } else {
                     calledMethods.add(methodInvocation.getName().toString());
                 }
@@ -271,6 +278,14 @@ public class Analyzer {
         }
         return graph;
 
+    }
+
+    private boolean isTypeInProject(ITypeBinding type){
+        List<TypeDeclaration> types = ((ClassDeclarationVisitor) getVisitor("class")).getTypes();
+        for(TypeDeclaration t: types){
+            if(t.getName().toString().equals(type.getName())) return true;
+        }
+        return false;
     }
 
     private ArrayList<File> listJavaFilesForFolder(final File folder) {
