@@ -25,6 +25,7 @@ public class CLI {
             "11. Les classes qui possèdent plus de X méthodes (la valeur de X est donnée).\n" +
             "12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
+            "14. Construire le graphe d'appel.\n" +
             ""
     ;
 
@@ -87,6 +88,9 @@ private final Scanner scanner = new Scanner(System.in);
                     break;
                 case 13:
                     res = "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + analyzer.getMaxParams() + "\n";
+                    break;
+                case 14:
+                    res = "" + analyzer.buildCallGraph();
                     break;
                 default:
                     break;
