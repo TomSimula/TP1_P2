@@ -141,4 +141,9 @@ public class GUI {
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
     }
+
+    public static void run(String[] args) {
+        new GUI("Camembert");
+
+    }
 }
