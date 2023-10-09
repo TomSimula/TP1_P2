@@ -1,9 +1,12 @@
 package groupe.camembert.UI;
 
 
+import groupe.camembert.Config.Config;
 import groupe.camembert.Process.Analyzer;
+import groupe.camembert.Process.CallGraph;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -90,6 +93,12 @@ private final Scanner scanner = new Scanner(System.in);
                     res = "Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application est de " + analyzer.getMaxParams() + "\n";
                     break;
                 case 14:
+                    CallGraph graph = analyzer.buildCallGraph();
+                    File f = new File(Config.projectSourcePath);
+                    System.out.println(f.getAbsolutePath());
+                    String fileName = f.getAbsolutePath().replace("/", "_").replace(".", "");
+                    graph.toMutableGraph(fileName);
+                    System.out.println("graphs created! saved in Graphs directory");
                     res = "" + analyzer.buildCallGraph();
                     break;
                 case 0:

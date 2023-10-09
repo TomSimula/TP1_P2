@@ -342,16 +342,14 @@ public class GUI implements ActionListener{
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == graphButton){
             try {
-                String graphName = projectPathField.getText().replace('/', '_');
-                String graphPath = "./Graphs/"+graphName+".svg";
+                File f = new File( projectPathField.getText());
+
+                String graphName = f.getAbsolutePath().replace('/', '_').replace(".", "");
 
                 callGraph.toMutableGraph(graphName);
-
-                String msg = "Graph saved in: "+graphPath;
-                resCallTextArea.setText(msg);
+                resCallTextArea.setText("graphs created! saved in Graphs directory");
 
             } catch ( Exception e){
-                throw new RuntimeException(e);
             }
         }
     }
