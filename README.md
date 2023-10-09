@@ -3,10 +3,10 @@ The project can be run via :
 
  * .JAR :
    * With CLI:  
-    `java -jar TP1_P2-1.jar -CLI <project path from home>`
+    `java -jar TP1_P2.jar -CLI <project path from home>`
 
    * With GUI:  
-    `java -jar TP1_P2-1.jar -GUI`  
+    `java -jar TP1_P2.jar -GUI`  
     And set up the path in the UI via the button config  
 
  * IDE :
