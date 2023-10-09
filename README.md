@@ -10,6 +10,7 @@ The project can be run via :
     And set up the path in the UI via the button config
 
 
+
  * IDE :
    * With CLI:  
     Run the main with -CLI <project path from home> in your program arguments  
