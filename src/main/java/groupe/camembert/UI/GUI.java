@@ -321,7 +321,6 @@ public class GUI implements ActionListener{
         } else if (actionEvent.getSource() == q12){
             try {
                 res = analyzer.getMethodsWithMostLines();
-                System.out.println(res);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -333,7 +332,6 @@ public class GUI implements ActionListener{
             try {
                 callGraph = analyzer.buildCallGraph();
                 res = callGraph.toString();
-                System.out.println(res);
                 graphButton.setEnabled(true);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -349,21 +347,8 @@ public class GUI implements ActionListener{
 
                 callGraph.toMutableGraph(graphName);
 
-                //open pdf file in shell
-
-
-//
-//                if (Desktop.isDesktopSupported()) {
-//                    try {
-//                        File myFile = new File(graphPath);
-//                        Desktop.getDesktop().open(myFile);
-//                    } catch (IOException ex) {
-//                        // no application registered for Svgs
-//                    }
-//                }else System.out.println("No application registered for SVGs");
-
                 String msg = "Graph saved in: "+graphPath;
-                resCallTextArea.append("\n\n"+msg);
+                resCallTextArea.setText(msg);
 
             } catch ( Exception e){
                 throw new RuntimeException(e);

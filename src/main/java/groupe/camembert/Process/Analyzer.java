@@ -238,7 +238,6 @@ public class Analyzer {
                 Expression expression = methodInvocation.getExpression();
                 ITypeBinding typeBinding;
                 if(expression == null) {
-                    System.out.println(methodInvocation.resolveMethodBinding());
                     typeBinding = clazz.resolveBinding();
                 } else {
                     typeBinding = expression.resolveTypeBinding();
