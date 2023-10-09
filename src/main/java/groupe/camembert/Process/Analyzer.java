@@ -180,7 +180,7 @@ public class Analyzer {
             List<MethodDeclaration> tenPercentMethods = methods.subList(0, tenPercent);
             tenPercentMethods.removeIf(methodDeclaration -> methodDeclaration.getBody() == null);
             if (tenPercentMethods.size() > 0) {
-                sb.append("\n-Plus grande(s) Methode(s) de la classe ")
+                sb.append("\n   -Plus grande(s) Methode(s) de la classe ")
                         .append(type.getName().getFullyQualifiedName())
                         .append(" : \n");
                 for (MethodDeclaration method : tenPercentMethods) {

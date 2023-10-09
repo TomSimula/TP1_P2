@@ -23,6 +23,7 @@ public class GUI implements ActionListener{
     private JTextArea resCallTextArea;
     private JScrollPane resCallScrollPane;
     private Analyzer analyzer;
+    public Font font = new Font("Verdana", Font.BOLD, 12);
 
     public GUI(String name){
         frame = new JFrame();
@@ -155,7 +156,8 @@ public class GUI implements ActionListener{
 
         resCallTextArea = new JTextArea();
         resCallScrollPane = new JScrollPane(resCallTextArea);
-        resCallTextArea.setBackground(Color.WHITE);
+        resCallTextArea.setBackground(Color.BLACK);
+        resCallTextArea.setEditable(false);
 
         resCallScrollPane.setPreferredSize(new Dimension(bottomPanel.getPreferredSize().width*2/3, bottomPanel.getPreferredSize().height));
         resCallScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -169,28 +171,40 @@ public class GUI implements ActionListener{
 
 
 
-        q8 = new JButton();
+        q8 = new JButton("<html><center>"+"Q10 : 10% classes having most methods"+"</center></html>");
+        q8.setFont(font);
+        q8.setForeground(Color.black);
         q8.addActionListener(this);
         callButtonPanel.add(q8);
 
-        q9 = new JButton();
+        q9 = new JButton("<html><center>"+"Q9 : 10% classes having most attributes."+"</center></html>");
+        q9.setFont(font);
+        q9.setForeground(Color.black);
         q9.addActionListener(this);
         callButtonPanel.add(q9);
 
-        q10 = new JButton();
+        q10 = new JButton("<html><center>"+"Q10 : classes having most methods AND attributes."+"</center></html>");
+        q10.setFont(font);
+        q10.setForeground(Color.black);
         q10.addActionListener(this);
         callButtonPanel.add(q10);
 
-        q11 = new JButton();
+        q11 = new JButton("<html><center>"+"Q11 : classes having more than X methods"+"</center></html>");
+        q11.setFont(font);
+        q11.setForeground(Color.black);
         q11.addActionListener(this);
         callButtonPanel.add(q11);
 
-        q12 = new JButton("Q12");
+        q12 = new JButton("<html><center>"+"Q12 : 10% classes having most lines of code."+"</center></html>");
+        q12.setFont(font);
+        q12.setForeground(Color.black);
         q12.addActionListener(this);
         callButtonPanel.add(q12);
 
 
         q14 = new JButton("Invocation Graph");
+        q14.setFont(font);
+        q14.setForeground(Color.black);
         q14.addActionListener(this);
         callButtonPanel.add(q14);
 
@@ -213,14 +227,14 @@ public class GUI implements ActionListener{
             Config.projectSourcePath = projectPathField.getText();
             analyzer = new Analyzer();
             try {
-                nbClass.setText("Class: "+analyzer.getNbClasses());
+                nbClass.setText("Classes: "+analyzer.getNbClasses());
                 nbMethod.setText("Methods: "+analyzer.getNbMethods());
                 nbLine.setText("Lines: "+analyzer.getNbCodeLines());
                 nbPackage.setText("Packages: "+analyzer.getNbPackages());
-                avgMethodPerClass.setText("AVG method per class: "+analyzer.getMethodsAvgPerClass());
-                avgLinePerClass.setText("AVG line per méthode: "+analyzer.getLinesAVGPerMethod());
-                avgAttributePerClass.setText("AVG attribute per class: "+analyzer.getAttributeAvgPerClass());
-                maxParameter.setText("MAX parameter: "+analyzer.getMaxParams());
+                avgMethodPerClass.setText("AVG methods per class: "+analyzer.getMethodsAvgPerClass());
+                avgLinePerClass.setText("AVG lines per method: "+analyzer.getLinesAVGPerMethod());
+                avgAttributePerClass.setText("AVG attributes per class: "+analyzer.getAttributeAvgPerClass());
+                maxParameter.setText("MAX parameters: "+analyzer.getMaxParams());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -248,6 +262,8 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q9){
             try {
@@ -258,6 +274,8 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q10){
             try {
@@ -268,6 +286,8 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q11){
             try {
@@ -278,6 +298,8 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q12){
             try {
@@ -287,6 +309,8 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q14){
             try {
@@ -296,11 +320,14 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         }
     }
 
-    private void unableCallButton(Boolean bool){
+    private void
+    unableCallButton(Boolean bool){
         q8.setEnabled(bool);
         q9.setEnabled(bool);
         q10.setEnabled(bool);
