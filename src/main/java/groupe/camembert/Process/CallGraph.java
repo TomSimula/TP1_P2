@@ -62,7 +62,6 @@ public class CallGraph {
         Graphviz viz = Graphviz.fromGraph(graph);
 
         viz.render(Format.SVG).toFile(new File("Graphs/"+name+".svg"));
-        viz.rasterize(Rasterizer.builtIn("pdf")).toFile(new File("Graphs/"+name+".pdf"));
         return graph;
     }
 
