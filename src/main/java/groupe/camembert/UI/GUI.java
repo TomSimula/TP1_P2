@@ -277,10 +277,8 @@ public class GUI implements ActionListener{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-//          appendToPane(resCallTextArea, res, Color.BLACK);
             resCallTextArea.setText(res);
-//            resCallTextArea.
-//            resCallTextArea.setCaretPosition(0);
+            resCallTextArea.setCaretPosition(0);
         }
     }
 
