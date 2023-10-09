@@ -2,8 +2,6 @@ package groupe.camembert.Process;
 
 import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizCmdLineEngine;
-import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
