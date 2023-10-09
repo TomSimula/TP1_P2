@@ -17,7 +17,7 @@ public class CLI {
             "3. Nombre total de méthodes.\n" +
             "4. Nombre total de packages.\n" +
             "5. Nombre moyen de méthodes par classe.\n" +
-            "6. Nombre moyen de lignes de code par classe.\n" +
+            "6. Nombre moyen de lignes de code par méthode.\n" +
             "7. Nombre moyen d'attributs par classe.\n" +
             "8. Les 10% des classes qui possèdent le plus grand nombre de méthodes.\n" +
             "9. Les 10% des classes qui possèdent le plus grand nombre d’attributs.\n" +
@@ -56,7 +56,7 @@ private final Scanner scanner = new Scanner(System.in);
                     res = "Il y a en moyenne " + analyzer.getMethodsAvgPerClass() + " methodes par classe dans ce projet (arrondi au superieur)";
                     break;
                 case 6:
-                    res = "Il y a en moyenne " + analyzer.getMethodAVGNbLines() + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
+                    res = "Il y a en moyenne " + analyzer.getLinesAVGPerMethod() + " lignes de code par methode dans ce projet (arrondi au superieur)\n";
                     break;
                 case 7:
                     res = "Il y a en moyenne " + analyzer.getAttributeAvgPerClass() + " attribut par classes dans ce projet (arrondi au superieur)\n";
