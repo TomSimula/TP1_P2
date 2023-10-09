@@ -20,11 +20,11 @@ import java.util.List;
 public class GUI implements ActionListener{
     private JFrame frame;
     private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel, graphButtonPanel;
-    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton, searchDirectoryButton, graphButton;
-    private JDialog configDialog;
+    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton, searchDirectoryButton, graphButton, cancelNbMethodButton, validateNbMethodButton;
+    private JDialog configDialog, paramDialog;
     private JLabel projectPathLabel, nbClass, nbMethod, nbLine, nbPackage,
-            avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter;
-    private JTextField projectPathField;
+            avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter, nbMethodLabel;
+    private JTextField projectPathField, nbMethodField;
     private JTextArea resCallTextArea;
     private JScrollPane resCallScrollPane;
     private Analyzer analyzer;
@@ -81,6 +81,26 @@ public class GUI implements ActionListener{
         basicStatPanel.setPreferredSize(new Dimension(screenDimension.width, screenDimension.height/3));
         basicStatPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 20));
         topPanel.add(basicStatPanel);
+
+        paramDialog = new JDialog(frame, "NB Methods", true);
+        paramDialog.setSize(450, 100);
+        paramDialog.setLocationRelativeTo(null);
+        paramDialog.setLayout(new FlowLayout());
+        paramDialog.setResizable(false);
+
+        validateNbMethodButton = new JButton("Validate");
+        validateNbMethodButton.addActionListener(this);
+        cancelNbMethodButton = new JButton("Cancel");
+        cancelNbMethodButton.addActionListener(this);
+
+        nbMethodLabel = new JLabel("X = ");
+        nbMethodField = new JTextField(Config.projectSourcePath,4);
+        nbMethodField.setText("1");
+
+        paramDialog.add(nbMethodLabel);
+        paramDialog.add(nbMethodField);
+        paramDialog.add(cancelNbMethodButton);
+        paramDialog.add(validateNbMethodButton);
 
         nbClass = new JLabel("Class:");
         nbClass.setFont(new Font("Arial", Font.BOLD, 20));
@@ -240,6 +260,24 @@ public class GUI implements ActionListener{
             configDialog.setVisible(true);
         } else if (actionEvent.getSource() == cancelButton){
             configDialog.setVisible(false);
+        } else if(actionEvent.getSource() == cancelNbMethodButton) {
+            paramDialog.setVisible(false);
+        } else if(actionEvent.getSource() == validateNbMethodButton) {
+            int x = 1;
+            if (nbMethodField.getText() != "" && nbMethodField.getText().matches("\\d+"))
+                x = Integer.parseInt(nbMethodField.getText());
+            try {
+                listTD = analyzer.getClassesWithMoreThanXMethods(x);
+                for(TypeDeclaration type : listTD)
+                    res += type.getName().getFullyQualifiedName() + ": " + type.getMethods().length + ("\n");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            resCallTextArea.setText(res);
+            resCallTextArea.setFont(font);
+            resCallTextArea.setForeground(Color.WHITE);
+            resCallTextArea.setCaretPosition(0);
+            paramDialog.setVisible(false);
         } else if (actionEvent.getSource() == loadButton){
             Config.projectSourcePath = projectPathField.getText();
             analyzer = new Analyzer();
@@ -307,17 +345,7 @@ public class GUI implements ActionListener{
             resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q11){
-            try {
-                listTD = analyzer.getClassesWithMoreThanXMethods(5);
-                for(TypeDeclaration type : listTD)
-                    res += type.getName().getFullyQualifiedName() + ": " + type.getMethods().length + ("\n");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            resCallTextArea.setText(res);
-            resCallTextArea.setFont(font);
-            resCallTextArea.setForeground(Color.WHITE);
-            resCallTextArea.setCaretPosition(0);
+            paramDialog.setVisible(true);
         } else if (actionEvent.getSource() == q12){
             try {
                 res = analyzer.getMethodsWithMostLines();
