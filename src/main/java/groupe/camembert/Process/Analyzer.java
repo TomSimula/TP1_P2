@@ -1,12 +1,12 @@
 package groupe.camembert.Process;
 
+import groupe.camembert.Config.Config;
 import groupe.camembert.visitor.*;
 import org.eclipse.jdt.core.dom.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class Analyzer {

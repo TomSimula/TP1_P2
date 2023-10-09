@@ -26,6 +26,7 @@ public class CLI {
             "12. Les 10% des méthodes qui possèdent le plus grand nombre de lignes de code (par classe).\n" +
             "13. Le nombre maximal de paramètres par rapport à toutes les méthodes de l’application.\n" +
             "14. Construire le graphe d'appel.\n" +
+            "0. Quit.\n" +
             ""
     ;
 
@@ -91,6 +92,9 @@ private final Scanner scanner = new Scanner(System.in);
                     break;
                 case 14:
                     res = "" + analyzer.buildCallGraph();
+                    break;
+                case 0:
+                    System.exit(1);
                     break;
                 default:
                     break;

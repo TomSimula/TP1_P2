@@ -1,7 +1,7 @@
 package groupe.camembert.UI;
 
 import groupe.camembert.Process.Analyzer;
-import groupe.camembert.Process.Config;
+import groupe.camembert.Config.Config;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import javax.swing.*;
@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 public class GUI implements ActionListener{
     private JFrame frame;
@@ -295,10 +294,8 @@ public class GUI implements ActionListener{
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-//          appendToPane(resCallTextArea, res, Color.BLACK);
             resCallTextArea.setText(res);
-//            resCallTextArea.
-//            resCallTextArea.setCaretPosition(0);
+            resCallTextArea.setCaretPosition(0);
         }
     }
 
