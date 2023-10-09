@@ -40,3 +40,5 @@ build/
 *Config.java
 pom.xml
 
+src/main/java/groupe/camembert/Process/Config.java
+.idea/misc.xml

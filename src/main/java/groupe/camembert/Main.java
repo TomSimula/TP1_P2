@@ -8,8 +8,9 @@ import java.io.IOException;
 
 public class Main {
     private static final CLI cli = new CLI();
+    private static final GUI gui = new GUI("Camembert");
     public static void main(String[] args) throws IOException {
-        //cli.run();
-        new GUI("Analyzer");
+//        gui.run(null);
+        cli.run();
     }
 }
