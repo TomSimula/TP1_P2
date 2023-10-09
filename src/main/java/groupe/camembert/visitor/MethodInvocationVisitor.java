@@ -1,5 +1,6 @@
 package groupe.camembert.visitor;
 
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 
 import java.util.ArrayList;
@@ -15,7 +16,11 @@ public class MethodInvocationVisitor extends AbstractVisitor {
     }
 
     public List<MethodInvocation> getMethodInvocations() {
-        return methodInvocations;
+        List<MethodInvocation> methodInvocationsCopy = new ArrayList<>();
+        for (MethodInvocation t: methodInvocations) {
+            methodInvocations.add(t);
+        }
+        return methodInvocationsCopy;
     }
 
 

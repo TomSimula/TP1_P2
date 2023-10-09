@@ -18,7 +18,11 @@ public class ClassDeclarationVisitor extends AbstractVisitor {
 	}
 	
 	public List<TypeDeclaration> getTypes() {
-		return types;
+		List<TypeDeclaration> typesCopy = new ArrayList<>();
+		for (TypeDeclaration t: types) {
+			types.add(t);
+		}
+		return typesCopy;
 	}
 
 }

@@ -1,6 +1,7 @@
 package groupe.camembert.visitor;
 
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,11 @@ public class MethodDeclarationVisitor extends AbstractVisitor {
 	}
 
 	public List<MethodDeclaration> getMethods() {
-		return methods;
+		List<MethodDeclaration> methodsCopy = new ArrayList<>();
+		for (MethodDeclaration t: methods) {
+			methods.add(t);
+		}
+		return methodsCopy;
 	}
 
 }

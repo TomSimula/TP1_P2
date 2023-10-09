@@ -1,6 +1,7 @@
 package groupe.camembert.visitor;
 
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,10 @@ public class AttributeDeclarationVisitor extends AbstractVisitor {
     }
 
     public List<FieldDeclaration> getAttributes() {
-        return attributes;
+        List<FieldDeclaration> attributesCopy = new ArrayList<>();
+        for (FieldDeclaration t: attributes) {
+            attributes.add(t);
+        }
+        return attributesCopy;
     }
 }
