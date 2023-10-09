@@ -216,11 +216,12 @@ public class Analyzer {
         visitProject(visitor);
         CallGraph graph = new CallGraph();
 
-        for(TypeDeclaration clazz: visitor.getTypes().subList(0, 7)) {
+        for(TypeDeclaration clazz: visitor.getTypes()) {
             CallGraph sousGraph = buildClassCallGraph(clazz);
             graph = graph.merge(sousGraph);
         }
 
+        //graph.toMutableGraph();
         return graph;
     }
 
@@ -235,12 +236,13 @@ public class Analyzer {
                 Expression expression = methodInvocation.getExpression();
                 ITypeBinding typeBinding;
                 if(expression == null) {
+                    System.out.println(methodInvocation.resolveMethodBinding());
                     typeBinding = clazz.resolveBinding();
                 } else {
                     typeBinding = expression.resolveTypeBinding();
                 }
                 if(typeBinding != null) {
-                    String calleeFullName = isTypeInProject(typeBinding) ? typeBinding.getQualifiedName() : typeBinding.getName();
+                    String calleeFullName = typeBinding.getName();
                     calledMethods.add(calleeFullName + "." + methodInvocation.getName().getIdentifier());
                 } else {
                     calledMethods.add(methodInvocation.getName().toString());
