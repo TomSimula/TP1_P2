@@ -1,5 +1,6 @@
 package groupe.camembert.Process;
 
+import groupe.camembert.Config.Config;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.*;
