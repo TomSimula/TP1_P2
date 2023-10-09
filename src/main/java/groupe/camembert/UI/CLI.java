@@ -7,7 +7,6 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 public class CLI {
     private final String menu =

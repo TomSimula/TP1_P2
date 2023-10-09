@@ -1,6 +1,5 @@
 package groupe.camembert.visitor;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 
 import java.util.ArrayList;

@@ -1,13 +1,10 @@
 package groupe.camembert.visitor;
 
-import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PackageDeclarationVisitor extends AbstractVisitor {
     private List<PackageDeclaration> packages = new ArrayList<>();
