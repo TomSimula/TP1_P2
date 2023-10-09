@@ -15,7 +15,7 @@ import java.util.Set;
 public class GUI implements ActionListener{
     private JFrame frame;
     private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel;
-    private JButton configButton, q8, q9, q10, q11, q12,loadButton, cancelButton;
+    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton;
     private JDialog configDialog;
     private JLabel projectPathLabel, nbClass, nbMethod, nbLine, nbPackage,
             avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter;
@@ -151,7 +151,8 @@ public class GUI implements ActionListener{
 
         resCallTextArea = new JTextArea();
         resCallScrollPane = new JScrollPane(resCallTextArea);
-        resCallTextArea.setBackground(Color.BLUE);
+        resCallTextArea.setBackground(Color.WHITE);
+
         resCallScrollPane.setPreferredSize(new Dimension(bottomPanel.getPreferredSize().width*2/3, bottomPanel.getPreferredSize().height));
         resCallScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         bottomPanel.add(resCallScrollPane, BorderLayout.LINE_START);
@@ -181,6 +182,12 @@ public class GUI implements ActionListener{
         q12 = new JButton("Q12");
         q12.addActionListener(this);
         callButtonPanel.add(q12);
+
+
+        q14 = new JButton("Invocation Graph");
+        q14.addActionListener(this);
+        callButtonPanel.add(q14);
+
 
         unableCallButton(false);
 
@@ -263,6 +270,17 @@ public class GUI implements ActionListener{
             }
             resCallTextArea.setText(res);
             resCallTextArea.setCaretPosition(0);
+        } else if (actionEvent.getSource() == q14){
+            try {
+                res = analyzer.buildCallGraph().toString();
+                System.out.println(res);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+//          appendToPane(resCallTextArea, res, Color.BLACK);
+            resCallTextArea.setText(res);
+//            resCallTextArea.
+//            resCallTextArea.setCaretPosition(0);
         }
     }
 
@@ -272,5 +290,6 @@ public class GUI implements ActionListener{
         q10.setEnabled(bool);
         q11.setEnabled(bool);
         q12.setEnabled(bool);
+        q14.setEnabled(bool);
     }
 }
