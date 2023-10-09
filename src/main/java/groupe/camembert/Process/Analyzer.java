@@ -21,9 +21,8 @@ public class Analyzer {
         this.javaFiles = listJavaFilesForFolder(folder);
     }
 
-    public void updateAnalyzer(){
-        File folder = new File(Config.projectSourcePath);
-        this.javaFiles = listJavaFilesForFolder(folder);
+    public static Analyzer updateAnalyzer(){
+        return new Analyzer();
     }
     //Operations
 
@@ -254,7 +253,7 @@ public class Analyzer {
         visitProject(visitor);
         CallGraph graph = new CallGraph();
 
-        for(TypeDeclaration clazz: visitor.getTypes().subList(0, 1)) {
+        for(TypeDeclaration clazz: visitor.getTypes().subList(0, 7)) {
             CallGraph sousGraph = buildClassCallGraph(clazz);
             graph = graph.merge(sousGraph);
         }
@@ -295,6 +294,7 @@ public class Analyzer {
         for(TypeDeclaration t: types){
             if(t.getName().toString().equals(type.getName())) return true;
         }
+        System.out.println("class " + type.getName() + " @ " + type.getPackage());
         return false;
     }
 

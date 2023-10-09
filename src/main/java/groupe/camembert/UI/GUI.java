@@ -22,7 +22,7 @@ public class GUI implements ActionListener{
     private JTextField projectPathField, jrePathField;
     private JTextArea resCallTextArea;
     private JScrollPane resCallScrollPane;
-    private final Analyzer analyzer = new Analyzer();
+    private Analyzer analyzer;
 
     public GUI(String name){
         frame = new JFrame();
@@ -51,6 +51,7 @@ public class GUI implements ActionListener{
         configDialog.setSize(450, 150);
         configDialog.setLocationRelativeTo(null);
         configDialog.setLayout(new FlowLayout());
+        configDialog.setResizable(false);
 
         projectPathLabel = new JLabel("JRE Path:");
         projectPathField = new JTextField(Config.projectSourcePath,30);
@@ -199,9 +200,9 @@ public class GUI implements ActionListener{
         } else if (actionEvent.getSource() == cancelButton){
             configDialog.setVisible(false);
         } else if (actionEvent.getSource() == loadButton){
-            Config.setprojectSourcePath(projectPathField.getText());
+            Config.setProjectSourcePath(projectPathField.getText());
             Config.setJrePath(jrePathField.getText());
-            analyzer.updateAnalyzer();
+            analyzer = Analyzer.updateAnalyzer();
             try {
                 nbClass.setText("Class: "+analyzer.getNbClasses());
                 nbMethod.setText("Methods: "+analyzer.getNbMethods());
