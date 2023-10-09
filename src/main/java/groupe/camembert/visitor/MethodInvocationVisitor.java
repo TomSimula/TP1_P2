@@ -12,7 +12,6 @@ public class MethodInvocationVisitor extends AbstractVisitor {
     @Override
     public boolean visit(MethodInvocation node) {
         methodInvocations.add(node);
-        hasVisited = true;
         return super.visit(node);
     }
 

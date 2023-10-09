@@ -20,6 +20,11 @@ public class Analyzer {
         File folder = new File(Config.projectSourcePath);
         this.javaFiles = listJavaFilesForFolder(folder);
     }
+
+    public void updateAnalyzer(){
+        File folder = new File(Config.projectSourcePath);
+        this.javaFiles = listJavaFilesForFolder(folder);
+    }
     //Operations
 
     //1. Nombre de classes de l’application.
@@ -66,7 +71,7 @@ public class Analyzer {
 
 
     //6. Nombre moyen de lignes de code par méthode.
-    public int getMethodAVGNbLines() throws IOException {
+    public int getLinesAVGPerMethod() throws IOException {
         MethodDeclarationVisitor methodVisitor = (MethodDeclarationVisitor) getVisitor("method");
 
         int sumLines = 0;
@@ -77,9 +82,14 @@ public class Analyzer {
         //pas de Map car parfois methodes sans corps
 
         for(MethodDeclaration method : methodVisitor.getMethods()){
-            if (method.getBody() != null) sumLines += method.getBody().toString().split("\n").length;
+            if (method.getBody() != null){
+                sumLines += method.getBody().toString().split("\n").length;
+                //On compte pas les { }
+                sumLines -= 2;
+            }
             nbMethods++; //on compte les methodes vides aussi du coup ?
         }
+
 
         //System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
 
@@ -316,9 +326,6 @@ public class Analyzer {
                     break;
                 case "package":
                     visitor = new PackageDeclarationVisitor();
-                    break;
-                case "methodInvocation":
-                    visitor = new MethodInvocationVisitor();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + type);
