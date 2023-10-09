@@ -15,7 +15,7 @@ import java.util.Set;
 public class GUI implements ActionListener{
     private JFrame frame;
     private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel;
-    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton;
+    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton, searchDirectoryButton;
     private JDialog configDialog;
     private JLabel projectPathLabel, nbClass, nbMethod, nbLine, nbPackage,
             avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter;
@@ -60,8 +60,12 @@ public class GUI implements ActionListener{
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this);
 
+        searchDirectoryButton = new JButton("Search directory");
+        searchDirectoryButton.addActionListener(this);
+
         configDialog.add(projectPathLabel);
         configDialog.add(projectPathField);
+        configDialog.add(searchDirectoryButton);
         configDialog.add(cancelButton);
         configDialog.add(loadButton);
 
@@ -163,6 +167,8 @@ public class GUI implements ActionListener{
         callButtonPanel.setLayout(new GridLayout(3,1, 5, 5));
         bottomPanel.add(callButtonPanel, BorderLayout.CENTER);
 
+
+
         q8 = new JButton();
         q8.addActionListener(this);
         callButtonPanel.add(q8);
@@ -187,7 +193,6 @@ public class GUI implements ActionListener{
         q14 = new JButton("Invocation Graph");
         q14.addActionListener(this);
         callButtonPanel.add(q14);
-
 
         unableCallButton(false);
 
@@ -221,7 +226,20 @@ public class GUI implements ActionListener{
             }
             configDialog.setVisible(false);
             unableCallButton(true);
-        } else if (actionEvent.getSource() == q8){
+        } else if (actionEvent.getSource() == searchDirectoryButton){
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new java.io.File("."));
+            chooser.setDialogTitle("Select project directory");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            if (chooser.showOpenDialog(searchDirectoryButton) == JFileChooser.APPROVE_OPTION) {
+                projectPathField.setText(chooser.getSelectedFile().toString());
+            }
+
+        }
+
+
+        else if (actionEvent.getSource() == q8){
             try {
                 listTD = analyzer.getClassesWithMostMethods();
                 for(TypeDeclaration type : listTD)
