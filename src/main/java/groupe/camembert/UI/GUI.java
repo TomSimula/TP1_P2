@@ -149,13 +149,13 @@ public class GUI implements ActionListener{
         bottomPanel = new JPanel();
         bottomPanel.setBackground(Color.GREEN);
         bottomPanel.setPreferredSize(new Dimension(screenDimension.width, screenDimension.height*2/3));
-        bottomPanel.setLayout(new BorderLayout(0, 0));
+        bottomPanel.setLayout(new BorderLayout());
         mainPanel.add(bottomPanel, BorderLayout.CENTER);
 
         resCallTextArea = new JTextArea();
         resCallScrollPane = new JScrollPane(resCallTextArea);
         resCallTextArea.setBackground(Color.BLUE);
-        resCallTextArea.setPreferredSize(new Dimension(bottomPanel.getPreferredSize().width*2/3, bottomPanel.getPreferredSize().height));
+        resCallScrollPane.setPreferredSize(new Dimension(bottomPanel.getPreferredSize().width*2/3, bottomPanel.getPreferredSize().height));
         resCallScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         bottomPanel.add(resCallScrollPane, BorderLayout.LINE_START);
 
@@ -181,7 +181,7 @@ public class GUI implements ActionListener{
         q11.addActionListener(this);
         callButtonPanel.add(q11);
 
-        q12 = new JButton();
+        q12 = new JButton("Q12");
         q12.addActionListener(this);
         callButtonPanel.add(q12);
 
@@ -224,6 +224,7 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q9){
             try {
                 listTD = analyzer.getClassesWithMostAttributes();
@@ -233,6 +234,7 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q10){
             try {
                 Set<TypeDeclaration> setClassQ10 = analyzer.getClassesWithMostAttributesAndMethods();
@@ -242,6 +244,7 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q11){
             try {
                 listTD = analyzer.getClassesWithMoreThanXMethods(5);
@@ -251,14 +254,16 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q12){
             try {
-                res = analyzer.getMethodsWithMostLines()+"\nhihih\nhihih\nhihih\nhihih\nhihih\nhihih\nhihih";
+                res = analyzer.getMethodsWithMostLines();
                 System.out.println(res);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             resCallTextArea.setText(res);
+            resCallTextArea.setCaretPosition(0);
         }
     }
 }
