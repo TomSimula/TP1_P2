@@ -18,7 +18,7 @@ public class MethodInvocationVisitor extends AbstractVisitor {
     public List<MethodInvocation> getMethodInvocations() {
         List<MethodInvocation> methodInvocationsCopy = new ArrayList<>();
         for (MethodInvocation t: methodInvocations) {
-            methodInvocations.add(t);
+            methodInvocationsCopy.add(t);
         }
         return methodInvocationsCopy;
     }

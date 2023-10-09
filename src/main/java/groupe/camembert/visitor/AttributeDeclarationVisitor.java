@@ -18,7 +18,7 @@ public class AttributeDeclarationVisitor extends AbstractVisitor {
     public List<FieldDeclaration> getAttributes() {
         List<FieldDeclaration> attributesCopy = new ArrayList<>();
         for (FieldDeclaration t: attributes) {
-            attributes.add(t);
+            attributesCopy.add(t);
         }
         return attributesCopy;
     }

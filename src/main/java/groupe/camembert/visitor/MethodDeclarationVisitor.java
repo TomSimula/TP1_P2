@@ -19,7 +19,7 @@ public class MethodDeclarationVisitor extends AbstractVisitor {
 	public List<MethodDeclaration> getMethods() {
 		List<MethodDeclaration> methodsCopy = new ArrayList<>();
 		for (MethodDeclaration t: methods) {
-			methods.add(t);
+			methodsCopy.add(t);
 		}
 		return methodsCopy;
 	}
