@@ -15,6 +15,7 @@ public class Main {
             switch (args[0]){
                 case "-GUI":
                     new GUI("Analyzer");
+                    break;
                 case "-CLI":
                     if (args.length != 2){
                         System.out.println("The option for CLI is: -CLI <project path from home>");
@@ -22,6 +23,10 @@ public class Main {
                         Config.projectSourcePath = args[1];
                         new CLI().run();
                     }
+                    break;
+                default:
+                    new GUI("Analyzer");
+                    break;
             }
         }
     }

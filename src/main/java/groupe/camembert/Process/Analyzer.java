@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.dom.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Analyzer {
@@ -180,7 +181,7 @@ public class Analyzer {
             List<MethodDeclaration> tenPercentMethods = methods.subList(0, tenPercent);
             tenPercentMethods.removeIf(methodDeclaration -> methodDeclaration.getBody() == null);
             if (tenPercentMethods.size() > 0) {
-                sb.append("\n   -Plus grande(s) Methode(s) de la classe ")
+                sb.append("\n-Plus grande(s) Methode(s) de la classe ")
                         .append(type.getName().getFullyQualifiedName())
                         .append(" : \n");
                 for (MethodDeclaration method : tenPercentMethods) {
@@ -220,6 +221,8 @@ public class Analyzer {
             CallGraph sousGraph = buildClassCallGraph(clazz);
             graph = graph.merge(sousGraph);
         }
+
+        //graph.toMutableGraph();
         return graph;
     }
 
@@ -234,6 +237,7 @@ public class Analyzer {
                 Expression expression = methodInvocation.getExpression();
                 ITypeBinding typeBinding;
                 if(expression == null) {
+                    System.out.println(methodInvocation.resolveMethodBinding());
                     typeBinding = clazz.resolveBinding();
                 } else {
                     typeBinding = expression.resolveTypeBinding();
@@ -242,11 +246,7 @@ public class Analyzer {
                     String calleeFullName = typeBinding.getName();
                     calledMethods.add(calleeFullName + "." + methodInvocation.getName().getIdentifier());
                 } else {
-
-                    if(expression != null && !expression.toString().contains("."))
-                        calledMethods.add(expression.toString() + "." + methodInvocation.getName().getIdentifier());
-                    else
-                        calledMethods.add(methodInvocation.getName().toString());
+                    calledMethods.add(methodInvocation.getName().toString());
                 }
             }
             graph.addNode(method, calledMethods);

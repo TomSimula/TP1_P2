@@ -2,20 +2,26 @@ package groupe.camembert.UI;
 
 import groupe.camembert.Process.Analyzer;
 import groupe.camembert.Config.Config;
+import groupe.camembert.Process.CallGraph;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 public class GUI implements ActionListener{
     private JFrame frame;
-    private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel;
-    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton, searchDirectoryButton;
+    private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel, graphButtonPanel;
+    private JButton configButton, q8, q9, q10, q11, q12, q14, loadButton, cancelButton, searchDirectoryButton, graphButton;
     private JDialog configDialog;
     private JLabel projectPathLabel, nbClass, nbMethod, nbLine, nbPackage,
             avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter;
@@ -23,6 +29,7 @@ public class GUI implements ActionListener{
     private JTextArea resCallTextArea;
     private JScrollPane resCallScrollPane;
     private Analyzer analyzer;
+    private CallGraph callGraph;
     public Font font = new Font("Verdana", Font.BOLD, 12);
 
     public GUI(String name){
@@ -88,7 +95,7 @@ public class GUI implements ActionListener{
         nbMethod = new JLabel("Methods:");
         nbMethod.setFont(new Font("Arial", Font.BOLD, 20));
         nbMethod.setOpaque(true);
-        nbMethod.setBackground(Color.YELLOW); 
+        nbMethod.setBackground(Color.YELLOW);
         nbMethod.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -97,7 +104,7 @@ public class GUI implements ActionListener{
         nbLine = new JLabel("Lines:");
         nbLine.setFont(new Font("Arial", Font.BOLD, 20));
         nbLine.setOpaque(true);
-        nbLine.setBackground(Color.YELLOW); 
+        nbLine.setBackground(Color.YELLOW);
         nbLine.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -106,7 +113,7 @@ public class GUI implements ActionListener{
         nbPackage = new JLabel("Packages:");
         nbPackage.setFont(new Font("Arial", Font.BOLD, 20));
         nbPackage.setOpaque(true);
-        nbPackage.setBackground(Color.YELLOW); 
+        nbPackage.setBackground(Color.YELLOW);
         nbPackage.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -115,7 +122,7 @@ public class GUI implements ActionListener{
         avgMethodPerClass = new JLabel("AVG method per class:");
         avgMethodPerClass.setFont(new Font("Arial", Font.BOLD, 20));
         avgMethodPerClass.setOpaque(true);
-        avgMethodPerClass.setBackground(Color.YELLOW); 
+        avgMethodPerClass.setBackground(Color.YELLOW);
         avgMethodPerClass.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -124,7 +131,7 @@ public class GUI implements ActionListener{
         avgLinePerClass = new JLabel("AVG line per class:");
         avgLinePerClass.setFont(new Font("Arial", Font.BOLD, 20));
         avgLinePerClass.setOpaque(true);
-        avgLinePerClass.setBackground(Color.YELLOW); 
+        avgLinePerClass.setBackground(Color.YELLOW);
         avgLinePerClass.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -133,7 +140,7 @@ public class GUI implements ActionListener{
         avgAttributePerClass = new JLabel("AVG attribute per class:");
         avgAttributePerClass.setFont(new Font("Arial", Font.BOLD, 20));
         avgAttributePerClass.setOpaque(true);
-        avgAttributePerClass.setBackground(Color.YELLOW); 
+        avgAttributePerClass.setBackground(Color.YELLOW);
         avgAttributePerClass.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -142,7 +149,7 @@ public class GUI implements ActionListener{
         maxParameter = new JLabel("MAX parameter:");
         maxParameter.setFont(new Font("Arial", Font.BOLD, 20));
         maxParameter.setOpaque(true);
-        maxParameter.setBackground(Color.YELLOW); 
+        maxParameter.setBackground(Color.YELLOW);
         maxParameter.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.BLACK, 2),
                 BorderFactory.createEmptyBorder(10, 5, 10, 5)));
@@ -169,9 +176,14 @@ public class GUI implements ActionListener{
         callButtonPanel.setLayout(new GridLayout(3,1, 5, 5));
         bottomPanel.add(callButtonPanel, BorderLayout.CENTER);
 
+        // panel to put both buttons vertically
+        graphButtonPanel = new JPanel();
+        graphButtonPanel.setPreferredSize(new Dimension(callButtonPanel.getPreferredSize().width/2, callButtonPanel.getPreferredSize().height/3));
+        graphButtonPanel.setLayout(new GridLayout(2,1, 5, 5));
+        callButtonPanel.add(graphButtonPanel);
 
 
-        q8 = new JButton("<html><center>"+"Q10 : 10% classes having most methods"+"</center></html>");
+        q8 = new JButton("<html><center>"+"Q8 : 10% classes having most methods"+"</center></html>");
         q8.setFont(font);
         q8.setForeground(Color.black);
         q8.addActionListener(this);
@@ -201,12 +213,18 @@ public class GUI implements ActionListener{
         q12.addActionListener(this);
         callButtonPanel.add(q12);
 
-
         q14 = new JButton("Invocation Graph");
         q14.setFont(font);
         q14.setForeground(Color.black);
         q14.addActionListener(this);
-        callButtonPanel.add(q14);
+        graphButtonPanel.add(q14);
+
+        graphButton = new JButton("Display Call Graph");
+        graphButton.setFont(font);
+        graphButton.setForeground(Color.black);
+        graphButton.addActionListener(this);
+        graphButton.setEnabled(false);
+        graphButtonPanel.add(graphButton);
 
         unableCallButton(false);
 
@@ -314,8 +332,10 @@ public class GUI implements ActionListener{
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q14){
             try {
-                res = analyzer.buildCallGraph().toString();
+                callGraph = analyzer.buildCallGraph();
+                res = callGraph.toString();
                 System.out.println(res);
+                graphButton.setEnabled(true);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -323,16 +343,41 @@ public class GUI implements ActionListener{
             resCallTextArea.setFont(font);
             resCallTextArea.setForeground(Color.WHITE);
             resCallTextArea.setCaretPosition(0);
+        } else if (actionEvent.getSource() == graphButton){
+            try {
+                String graphName = projectPathField.getText().replace('/', '_');
+                String graphPath = "./Graphs/"+graphName+".svg";
+
+                callGraph.toMutableGraph(graphName);
+
+                //open pdf file in shell
+
+
+//
+//                if (Desktop.isDesktopSupported()) {
+//                    try {
+//                        File myFile = new File(graphPath);
+//                        Desktop.getDesktop().open(myFile);
+//                    } catch (IOException ex) {
+//                        // no application registered for Svgs
+//                    }
+//                }else System.out.println("No application registered for SVGs");
+
+                String msg = "Graph saved in: "+graphPath;
+                resCallTextArea.append("\n\n"+msg);
+
+            } catch ( Exception e){
+                throw new RuntimeException(e);
+            }
         }
     }
 
-    private void
-    unableCallButton(Boolean bool){
-        q8.setEnabled(bool);
-        q9.setEnabled(bool);
-        q10.setEnabled(bool);
-        q11.setEnabled(bool);
-        q12.setEnabled(bool);
-        q14.setEnabled(bool);
+        private void unableCallButton(Boolean bool){
+            q8.setEnabled(bool);
+            q9.setEnabled(bool);
+            q10.setEnabled(bool);
+            q11.setEnabled(bool);
+            q12.setEnabled(bool);
+            q14.setEnabled(bool);
+        }
     }
-}

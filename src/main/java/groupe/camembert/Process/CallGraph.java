@@ -1,12 +1,12 @@
 package groupe.camembert.Process;
 
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.engine.GraphvizCmdLineEngine;
+import guru.nidi.graphviz.engine.*;
+import guru.nidi.graphviz.model.Factory;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,28 +48,21 @@ public class CallGraph {
     }
 
 
-    public MutableGraph toMutableGraph() throws IOException {
-        MutableGraph graph = guru.nidi.graphviz.model.Factory.mutGraph("callGraph").setDirected(true);
+    public MutableGraph toMutableGraph(String name) throws IOException {
+        MutableGraph graph = Factory.mutGraph("callGraph").setDirected(true);
         for (Map.Entry<MethodDeclaration, List<String>> entry : nodes.entrySet()) {
             String caller = entry.getKey().resolveBinding().getDeclaringClass().getName() + "." + entry.getKey().getName();
-            graph.add(guru.nidi.graphviz.model.Factory.mutNode(caller));
+            graph.add(Factory.mutNode(caller));
             for(String calledMethod : entry.getValue()){
-                graph.add(guru.nidi.graphviz.model.Factory.mutNode(calledMethod));
-                graph.add(guru.nidi.graphviz.model.Factory.mutNode(caller).addLink(guru.nidi.graphviz.model.Factory.mutNode(calledMethod)));
+                graph.add(Factory.mutNode(calledMethod));
+                graph.add(Factory.mutNode(caller).addLink(Factory.mutNode(calledMethod)));
             }
         }
 
-        /*Graphviz.useEngine(new GraphvizCmdLineEngine()); // Rasterizer.builtIn() works only with CmdLineEngine
-        Graph g = graph("example5").directed().with(node("abc").link(node("xyz")));
-        Graphviz viz = Graphviz.fromGraph(g);
-        viz.width(200).render(Format.SVG).toFile(new File("example/ex5.svg"));
-        viz.width(200).rasterize(Rasterizer.BATIK).toFile(new File("example/ex5b.png"));
-        viz.width(200).rasterize(Rasterizer.SALAMANDER).toFile(new File("example/ex5s.png"));
-        viz.width(200).rasterize(Rasterizer.builtIn("pdf")).toFile(new File("example/ex5p"));
-        String dot = viz.render(Format.DOT).toString();
-        String json = viz.engine(Engine.NEATO).render(Format.JSON).toString();
-        BufferedImage image = viz.render(Format.PNG).toImage();*/
-        Graphviz.fromGraph(graph).render(Format.PNG).toFile(new File("example/ex1m.png"));
+        Graphviz viz = Graphviz.fromGraph(graph);
+
+        viz.render(Format.SVG).toFile(new File("Graphs/"+name+".svg"));
+        viz.rasterize(Rasterizer.builtIn("pdf")).toFile(new File("Graphs/"+name+".pdf"));
         return graph;
     }
 
