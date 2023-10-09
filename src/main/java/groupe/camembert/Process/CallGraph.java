@@ -7,6 +7,8 @@ import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

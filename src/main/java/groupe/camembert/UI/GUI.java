@@ -151,7 +151,8 @@ public class GUI implements ActionListener{
 
         resCallTextArea = new JTextArea();
         resCallScrollPane = new JScrollPane(resCallTextArea);
-        resCallTextArea.setBackground(Color.BLUE);
+        resCallTextArea.setBackground(Color.WHITE);
+
         resCallScrollPane.setPreferredSize(new Dimension(bottomPanel.getPreferredSize().width*2/3, bottomPanel.getPreferredSize().height));
         resCallScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         bottomPanel.add(resCallScrollPane, BorderLayout.LINE_START);
