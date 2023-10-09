@@ -210,7 +210,7 @@ public class Analyzer {
         return max;
     }
 
-
+    //Merge every call graph of each class
     public CallGraph buildCallGraph() throws IOException {
         ClassDeclarationVisitor visitor = (ClassDeclarationVisitor) getVisitor("class");
         visitProject(visitor);
@@ -223,6 +223,7 @@ public class Analyzer {
         return graph;
     }
 
+    //Create and return the call graph of a class
     private CallGraph buildClassCallGraph(TypeDeclaration clazz){
         CallGraph graph = new CallGraph();
         for(MethodDeclaration method: clazz.getMethods()) {
@@ -255,15 +256,7 @@ public class Analyzer {
 
     }
 
-    private boolean isTypeInProject(ITypeBinding type){
-        List<TypeDeclaration> types = ((ClassDeclarationVisitor) getVisitor("class")).getTypes();
-        for(TypeDeclaration t: types){
-            if(t.getName().toString().equals(type.getName())) return true;
-        }
-        System.out.println("class " + type.getName() + " @ " + type.getPackage());
-        return false;
-    }
-
+    //Find and return all file in a directory
     private ArrayList<File> listJavaFilesForFolder(final File folder) {
         ArrayList<File> javaFiles = new ArrayList<File>();
         for (File fileEntry : folder.listFiles()) {
@@ -277,6 +270,7 @@ public class Analyzer {
         return javaFiles;
     }
 
+    //Check if we already have the desired visitor and return it if yes otherwise return a new one
     private ASTVisitor getVisitor(String type) {
         ASTVisitor visitor = visitors.get(type);
         if(visitor == null){
@@ -301,6 +295,7 @@ public class Analyzer {
         return visitor;
     }
 
+    //Visit every file with a visitor
     private void visitProject(AbstractVisitor visitor) throws IOException {
         if(!visitor.hasVisited()){
             for (File fileEntry : javaFiles) {
