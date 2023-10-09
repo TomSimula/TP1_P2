@@ -1,20 +1,22 @@
 package groupe.camembert.visitor;
 
+import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import java.util.List;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class MethodInvocationVisitor extends AbstractVisitor {
-    private List<MethodInvocation> calls = new ArrayList<>();
+    List<MethodInvocation> methodInvocations = new ArrayList<>();
 
+    @Override
     public boolean visit(MethodInvocation node) {
+        methodInvocations.add(node);
         hasVisited = true;
-        calls.add(node);
         return super.visit(node);
     }
 
-    public List<MethodInvocation> getCalls() {
-        return calls;
+    public List<MethodInvocation> getMethodInvocations() {
+        return methodInvocations;
     }
-
 }
