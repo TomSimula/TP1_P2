@@ -17,9 +17,9 @@ public class GUI implements ActionListener{
     private JPanel mainPanel, topPanel, bottomPanel, basicStatPanel, callButtonPanel;
     private JButton configButton, q8, q9, q10, q11, q12,loadButton, cancelButton;
     private JDialog configDialog;
-    private JLabel projectPathLabel, jrePathLabel,nbClass, nbMethod, nbLine, nbPackage,
+    private JLabel projectPathLabel, nbClass, nbMethod, nbLine, nbPackage,
             avgMethodPerClass, avgLinePerClass, avgAttributePerClass, maxParameter;
-    private JTextField projectPathField, jrePathField;
+    private JTextField projectPathField;
     private JTextArea resCallTextArea;
     private JScrollPane resCallScrollPane;
     private Analyzer analyzer;
@@ -48,15 +48,13 @@ public class GUI implements ActionListener{
         topPanel.add(configButton);
 
         configDialog = new JDialog(frame, "Configuration", true);
-        configDialog.setSize(450, 150);
+        configDialog.setSize(450, 100);
         configDialog.setLocationRelativeTo(null);
         configDialog.setLayout(new FlowLayout());
         configDialog.setResizable(false);
 
-        projectPathLabel = new JLabel("JRE Path:");
+        projectPathLabel = new JLabel("Project path:");
         projectPathField = new JTextField(Config.projectSourcePath,30);
-        jrePathLabel = new JLabel("JRE Path:");
-        jrePathField = new JTextField(Config.jrePath,30);
         loadButton = new JButton("Load");
         loadButton.addActionListener(this);
         cancelButton = new JButton("Cancel");
@@ -64,8 +62,6 @@ public class GUI implements ActionListener{
 
         configDialog.add(projectPathLabel);
         configDialog.add(projectPathField);
-        configDialog.add(jrePathLabel);
-        configDialog.add(jrePathField);
         configDialog.add(cancelButton);
         configDialog.add(loadButton);
 
@@ -186,6 +182,8 @@ public class GUI implements ActionListener{
         q12.addActionListener(this);
         callButtonPanel.add(q12);
 
+        unableCallButton(false);
+
         frame.add(mainPanel);
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
@@ -200,9 +198,8 @@ public class GUI implements ActionListener{
         } else if (actionEvent.getSource() == cancelButton){
             configDialog.setVisible(false);
         } else if (actionEvent.getSource() == loadButton){
-            Config.setProjectSourcePath(projectPathField.getText());
-            Config.setJrePath(jrePathField.getText());
-            analyzer = Analyzer.updateAnalyzer();
+            Config.projectSourcePath = projectPathField.getText();
+            analyzer = new Analyzer();
             try {
                 nbClass.setText("Class: "+analyzer.getNbClasses());
                 nbMethod.setText("Methods: "+analyzer.getNbMethods());
@@ -216,6 +213,7 @@ public class GUI implements ActionListener{
                 throw new RuntimeException(e);
             }
             configDialog.setVisible(false);
+            unableCallButton(true);
         } else if (actionEvent.getSource() == q8){
             try {
                 listTD = analyzer.getClassesWithMostMethods();
@@ -238,8 +236,8 @@ public class GUI implements ActionListener{
             resCallTextArea.setCaretPosition(0);
         } else if (actionEvent.getSource() == q10){
             try {
-                Set<TypeDeclaration> setClassQ10 = analyzer.getClassesWithMostAttributesAndMethods();
-                for(TypeDeclaration type : setClassQ10)
+                List<TypeDeclaration> listClassQ10 = analyzer.getClassesWithMostAttributesAndMethods();
+                for(TypeDeclaration type : listClassQ10)
                     res += type.getName().getFullyQualifiedName() + ("\n");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -266,5 +264,13 @@ public class GUI implements ActionListener{
             resCallTextArea.setText(res);
             resCallTextArea.setCaretPosition(0);
         }
+    }
+
+    private void unableCallButton(Boolean bool){
+        q8.setEnabled(bool);
+        q9.setEnabled(bool);
+        q10.setEnabled(bool);
+        q11.setEnabled(bool);
+        q12.setEnabled(bool);
     }
 }

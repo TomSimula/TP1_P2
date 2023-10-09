@@ -72,8 +72,8 @@ private final Scanner scanner = new Scanner(System.in);
                         res += type.getName().getFullyQualifiedName() + ": " + type.getFields().length + ("\n");
                     break;
                 case 10:
-                    Set<TypeDeclaration> setClassQ10 = analyzer.getClassesWithMostAttributesAndMethods();
-                    for(TypeDeclaration type : setClassQ10)
+                    listTD = analyzer.getClassesWithMostAttributesAndMethods();
+                    for(TypeDeclaration type : listTD)
                         res += type.getName().getFullyQualifiedName() + ("\n");
                     break;
                 case 11:

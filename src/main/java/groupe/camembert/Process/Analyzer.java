@@ -20,10 +20,6 @@ public class Analyzer {
         File folder = new File(Config.projectSourcePath);
         this.javaFiles = listJavaFilesForFolder(folder);
     }
-
-    public static Analyzer updateAnalyzer(){
-        return new Analyzer();
-    }
     //Operations
 
     //1. Nombre de classes de l’application.
@@ -88,10 +84,6 @@ public class Analyzer {
             }
             nbMethods++; //on compte les methodes vides aussi du coup ?
         }
-
-
-        //System.out.println("somme des lignes de chaque methode : " + sumLines + " ; nombre de Methodes : " + nbMethods);
-
         int avg = Math.round((float)sumLines/nbMethods);
         return avg;
     }
@@ -121,10 +113,6 @@ public class Analyzer {
 
         int tenPercent = Math.round((float)types.size()/10);
         List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
-        /*StringBuilder sb = new StringBuilder();
-        for(TypeDeclaration type : tenPercentTypes){
-            sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getMethods().length).append("\n");
-        }*/
         return tenPercentTypes;
     }
 
@@ -139,43 +127,25 @@ public class Analyzer {
         Collections.reverse(types);
         int tenPercent = Math.round((float)types.size()/10);
         List<TypeDeclaration> tenPercentTypes = types.subList(0, tenPercent);
-        /*StringBuilder sb = new StringBuilder();
-        for(TypeDeclaration type : tenPercentTypes){
-            sb.append(type.getName().getFullyQualifiedName()).append(": ").append(type.getFields().length).append("\n");
-        }*/
         return tenPercentTypes;
     }
 
 
 
     //10. Les classes qui font partie en même temps des deux catégories précédentes.
-    public Set<TypeDeclaration> getClassesWithMostAttributesAndMethods() throws IOException {
+    public List<TypeDeclaration> getClassesWithMostAttributesAndMethods() throws IOException {
 
-        /*
+        List<TypeDeclaration> l1 = new ArrayList<>();
+        for (TypeDeclaration t:getClassesWithMostAttributes()) {
+            l1.add(t);
+        }
+        List<TypeDeclaration> l2 = new ArrayList<>();
+        for (TypeDeclaration t:getClassesWithMostMethods()) {
+            l2.add(t);
+        }
+        l1.retainAll(l2);
 
-        String[] str1Tab = str1.split("\n");
-        String[] str2Tab = str2.split("\n");
-
-        List<String> str1List = new ArrayList<>(List.of(str1Tab));
-        List<String> str2List = new ArrayList<>(List.of(str2Tab));
-
-        //regex to delete the number of attributes/methods
-        String regex = ": [0-9]+";
-
-        str1List.replaceAll(s -> s.replaceAll(regex, ""));
-        str2List.replaceAll(s -> s.replaceAll(regex, ""));
-
-        str1List.retainAll(str2List);*/
-
-        List<TypeDeclaration> l1 = getClassesWithMostAttributes();
-        List<TypeDeclaration> l2 = getClassesWithMostMethods();
-
-        Set<TypeDeclaration> result = l1.stream()
-                .distinct()
-                .filter(l2::contains)
-                .collect(Collectors.toSet());
-
-        return result;
+        return l1;
     }
 
 
@@ -186,13 +156,6 @@ public class Analyzer {
         List<TypeDeclaration> types = visitor.getTypes();
         types.sort(Comparator.comparingInt(o -> o.getMethods().length));
         types.removeIf(typeDeclaration -> typeDeclaration.getMethods().length <= x);
-        /*StringBuilder sb = new StringBuilder();
-        for(TypeDeclaration type : types){
-            sb.append(type.getName().getFullyQualifiedName())
-                    .append(": ")
-                    .append(type.getMethods().length)
-                    .append("\n");
-        }*/
         return types;
     }
 
