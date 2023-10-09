@@ -220,8 +220,6 @@ public class Analyzer {
             CallGraph sousGraph = buildClassCallGraph(clazz);
             graph = graph.merge(sousGraph);
         }
-
-        //graph.toMutableGraph();
         return graph;
     }
 
@@ -236,7 +234,6 @@ public class Analyzer {
                 Expression expression = methodInvocation.getExpression();
                 ITypeBinding typeBinding;
                 if(expression == null) {
-                    System.out.println(methodInvocation.resolveMethodBinding());
                     typeBinding = clazz.resolveBinding();
                 } else {
                     typeBinding = expression.resolveTypeBinding();
@@ -245,7 +242,11 @@ public class Analyzer {
                     String calleeFullName = typeBinding.getName();
                     calledMethods.add(calleeFullName + "." + methodInvocation.getName().getIdentifier());
                 } else {
-                    calledMethods.add(methodInvocation.getName().toString());
+
+                    if(expression != null && !expression.toString().contains("."))
+                        calledMethods.add(expression.toString() + "." + methodInvocation.getName().getIdentifier());
+                    else
+                        calledMethods.add(methodInvocation.getName().toString());
                 }
             }
             graph.addNode(method, calledMethods);
