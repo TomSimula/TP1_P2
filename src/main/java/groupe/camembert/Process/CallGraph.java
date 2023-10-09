@@ -2,7 +2,6 @@ package groupe.camembert.Process;
 
 import guru.nidi.graphviz.engine.*;
 import guru.nidi.graphviz.model.Factory;
-import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.MutableGraph;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
@@ -15,7 +14,6 @@ import java.util.Map;
 
 public class CallGraph {
     Map<MethodDeclaration, List<String>> nodes = new HashMap<>();
-    Map<MethodDeclaration, List<MethodDeclaration>> mergedNodes = new HashMap<>();
 
     public void addNode(MethodDeclaration method, List<String> calledMethods) {
         nodes.put(method, calledMethods);
