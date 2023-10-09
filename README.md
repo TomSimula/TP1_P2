@@ -17,4 +17,4 @@ The project can be run via :
     Run the main with -GUI in your program arguments  
     And set up the path in the UI via the button config  
 
-Code by Tom Simula, Daniel Azevedo Gomes, Sebastien Prud’Homme Gateau
+Coded by Tom Simula, Daniel Azevedo Gomes, Sebastien Prud’Homme Gateau
